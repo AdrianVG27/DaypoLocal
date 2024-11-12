@@ -6,8 +6,10 @@ document.addEventListener('DOMContentLoaded', function () {
     const authorDropdown = document.getElementById("author-dropdown");
     const testSelector = document.getElementById("test-selector");
     const authorSelector = document.getElementById("author-selector");
-    const moduleDropdown = document.getElementById("module-dropdown"); 
-    const moduleSelector = document.getElementById("module-selector"); 
+    const moduleDropdown = document.getElementById("module-dropdown");
+    const moduleSelector = document.getElementById("module-selector");
+    const themeDropdown = document.getElementById("theme-dropdown");
+    const themeSelector = document.getElementById("theme-selector");
 
     // Botones Menu Principal y Repetir
     const menuPrincipalButton = document.getElementById("menu-principal-button");
@@ -18,7 +20,8 @@ document.addEventListener('DOMContentLoaded', function () {
     let answers = {};
     let selectedTest = "";
     let selectedAuthor = "";
-    let selectedModule = ""; 
+    let selectedModule = "";
+    let selectedTheme = "";
 
     // Inicialmente, muestra el selector de autor
     authorSelector.style.display = "block";
@@ -28,12 +31,12 @@ document.addEventListener('DOMContentLoaded', function () {
         fetch("./tests/authors.json")
             .then(response => response.json())
             .then(authors => {
-                authorDropdown.innerHTML = ""; 
+                authorDropdown.innerHTML = "";
 
                 const defaultOption = document.createElement("option");
                 defaultOption.value = "seleccionar";
                 defaultOption.text = "Selecciona un autor";
-                defaultOption.selected = true; 
+                defaultOption.selected = true;
                 authorDropdown.appendChild(defaultOption);
 
                 authors.forEach(author => {
@@ -50,12 +53,12 @@ document.addEventListener('DOMContentLoaded', function () {
         fetch(`./tests/${author}/modules.json`)
             .then(response => response.json())
             .then(modules => {
-                moduleDropdown.innerHTML = ""; 
+                moduleDropdown.innerHTML = "";
 
                 const defaultOption = document.createElement("option");
                 defaultOption.value = "seleccionar";
                 defaultOption.text = "Selecciona un módulo";
-                defaultOption.selected = true; 
+                defaultOption.selected = true;
                 moduleDropdown.appendChild(defaultOption);
 
                 modules.forEach(module => {
@@ -67,25 +70,70 @@ document.addEventListener('DOMContentLoaded', function () {
             });
     }
 
-    // Función para cargar la lista de tests para el autor y módulo seleccionados
-    function loadTests(author, module) {
-        fetch(`./tests/${author}/${module}/tests.json`)
-            .then(response => response.json())
+    // Función para cargar la lista de temas para el autor y módulo seleccionados
+    function loadThemes(author, module) {
+        // Verifica si el archivo themes.json existe antes de intentar cargarlo
+        fetch(`./tests/${author}/${module}/temas.json`)
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    // Si no existe, muestra un mensaje de error o redirige a otra página
+                    console.error(`Error: No se encontró el archivo themes.json para ${author}/${module}`);
+                    // Por ejemplo, redirige a main.html:
+                    window.location.href = `/main.html?author=${author}&module=${module}`;
+                    return Promise.reject('Themes not found');
+                }
+            })
+            .then(themes => {
+                themeDropdown.innerHTML = "";
+
+                const defaultOption = document.createElement("option");
+                defaultOption.value = "seleccionar";
+                defaultOption.text = "Selecciona un tema";
+                defaultOption.selected = true;
+                themeDropdown.appendChild(defaultOption);
+
+                themes.forEach(theme => {
+                    const option = document.createElement("option");
+                    option.value = theme;
+                    option.text = theme;
+                    themeDropdown.appendChild(option);
+                });
+            })
+            .catch(error => {
+                console.error("Error loading themes:", error);
+            });
+    }
+
+    // Función para cargar la lista de tests para el autor, módulo y tema seleccionados
+    function loadTests(author, module, theme) {
+        fetch(`./tests/${author}/${module}/${theme}/tests.json`)
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    console.error(`Error: No se encontró el archivo tests.json para ${author}/${module}/${theme}`);
+                    return Promise.reject('Tests not found');
+                }
+            })
             .then(tests => {
-                testDropdown.innerHTML = ""; 
+                testDropdown.innerHTML = "";
 
                 const defaultOption = document.createElement("option");
                 defaultOption.value = "seleccionar";
                 defaultOption.text = "Selecciona un test";
-                defaultOption.selected = true; 
+                defaultOption.selected = true;
                 testDropdown.appendChild(defaultOption);
-
                 tests.forEach(test => {
                     const option = document.createElement("option");
                     option.value = test;
                     option.text = test;
                     testDropdown.appendChild(option);
                 });
+            })
+            .catch(error => {
+                console.error("Error loading tests:", error);
             });
     }
 
@@ -95,15 +143,14 @@ document.addEventListener('DOMContentLoaded', function () {
         console.log("Autor seleccionado:", selectedAuthor);
 
         if (selectedAuthor === "seleccionar") {
-            window.location.href = "/main.html";
+            // No se redirige a la selección de autor. Se mantiene en la selección de autor.
             return;
         }
 
         moduleSelector.style.display = "block";
-        moduleSelector.style.marginTop = "20px"; 
+        moduleSelector.style.marginTop = "20px";
         loadModules(selectedAuthor);
-
-        authorSelector.style.marginTop = "20px"; 
+        authorSelector.style.marginTop = "20px";
     });
 
     // Evento para cambiar el módulo
@@ -112,44 +159,63 @@ document.addEventListener('DOMContentLoaded', function () {
         console.log("Módulo seleccionado:", selectedModule);
 
         if (selectedModule === "seleccionar") {
-            window.location.href = `/main.html?author=${selectedAuthor}`; 
-            return; 
+            // No se redirige a la selección de autor. Se mantiene en la selección de módulo.
+            return;
         }
+        themeSelector.style.display = "block";
+        themeSelector.style.marginTop = "20px";
+        loadThemes(selectedAuthor, selectedModule);
 
+        moduleSelector.style.marginTop = "20px";
+    });
+
+    // Evento para cambiar el tema
+    themeDropdown.addEventListener("change", function () {
+        selectedTheme = this.value;
+        console.log("Tema seleccionado:", selectedTheme);
+
+        if (selectedTheme === "seleccionar") {
+            // No se redirige a la selección de módulo. Se mantiene en la selección de tema.
+            return;
+        }
         testSelector.style.display = "block";
-        testSelector.style.marginTop = "20px"; 
-        loadTests(selectedAuthor, selectedModule);
+        testSelector.style.marginTop = "20px";
+        loadTests(selectedAuthor, selectedModule, selectedTheme);
 
-        moduleSelector.style.marginTop = "20px"; 
+        themeSelector.style.marginTop = "20px";
     });
 
     // Evento para cambiar el test
     testDropdown.addEventListener("change", function () {
-        selectedTest = this.value; 
+        selectedTest = this.value;
         console.log("Test seleccionado:", selectedTest);
 
         if (selectedTest === "seleccionar") {
-            window.location.href = `/main.html?author=${selectedAuthor}&module=${selectedModule}`; 
-            return; 
+            // No se redirige a la selección de tema. Se mantiene en la selección de test.
+            return;
         }
 
         testSelector.style.display = "none";
         authorSelector.style.display = "none";
         moduleSelector.style.display = "none";
+        themeSelector.style.display = "none";
         form.style.display = "block";
         submitButton.style.display = "block";
 
-        fetch(`./tests/${selectedAuthor}/${selectedModule}/${selectedTest}.json`)
+        fetch(`./tests/${selectedAuthor}/${selectedModule}/${selectedTheme}/${selectedTest}.json`)
             .then(response => response.json())
             .then(loadedQuestions => {
                 questions = loadedQuestions;
                 currentQuestionIndex = 0;
-                answers = {}; 
+                answers = {};
                 if (questions.length > 0) {
-            showQuestion();
-        }
+                    showQuestion();
+                }
+            })
+            .catch(error => {
+                console.error("Error loading tests:", error);
+            });
     });
-});
 
     // Función para mostrar la pregunta actual
     function showQuestion() {
@@ -168,6 +234,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         authorSelector.style.display = "none";
         moduleSelector.style.display = "none";
+        themeSelector.style.display = "none";
     }
 
     // Función para crear un elemento de pregunta
@@ -182,10 +249,10 @@ document.addEventListener('DOMContentLoaded', function () {
         }
         
         const questionContainer = document.createElement("div");
-        questionContainer.style.display = "flex"; 
-        questionContainer.style.flexDirection = "column"; 
+        questionContainer.style.display = "flex";
+        questionContainer.style.flexDirection = "column";
 
-        questionContainer.appendChild(questionElement); 
+        questionContainer.appendChild(questionElement);
         return questionContainer;
     }
 
@@ -195,7 +262,7 @@ document.addEventListener('DOMContentLoaded', function () {
         label.htmlFor = question.pregunta;
         label.textContent = question.pregunta;
 
-        const optionsContainer = document.createElement("div"); 
+        const optionsContainer = document.createElement("div");
         optionsContainer.style.display = "flex";
         optionsContainer.style.flexDirection = "column";
 
@@ -207,10 +274,10 @@ document.addEventListener('DOMContentLoaded', function () {
             optionInput.value = opcion;
             optionElement.appendChild(optionInput);
             optionElement.appendChild(document.createTextNode(opcion));
-            optionsContainer.appendChild(optionElement); 
+            optionsContainer.appendChild(optionElement);
         });
 
-        label.appendChild(optionsContainer); 
+        label.appendChild(optionsContainer);
 
         return label;
     }
@@ -221,7 +288,7 @@ document.addEventListener('DOMContentLoaded', function () {
         label.htmlFor = question.pregunta;
         label.textContent = question.pregunta;
 
-        const optionsContainer = document.createElement("div"); 
+        const optionsContainer = document.createElement("div");
         optionsContainer.style.display = "flex";
         optionsContainer.style.flexDirection = "column";
 
@@ -233,10 +300,10 @@ document.addEventListener('DOMContentLoaded', function () {
             optionInput.value = opcion;
             optionElement.appendChild(optionInput);
             optionElement.appendChild(document.createTextNode(opcion));
-            optionsContainer.appendChild(optionElement); 
+            optionsContainer.appendChild(optionElement);
         });
 
-        label.appendChild(optionsContainer); 
+        label.appendChild(optionsContainer);
 
         return label;
     }
@@ -275,15 +342,15 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Crea un contenedor para los resultados
         const resultsContainer = document.createElement("div");
-        resultsContainer.style.display = "flex"; 
-        resultsContainer.style.flexDirection = "column"; 
+        resultsContainer.style.display = "flex";
+        resultsContainer.style.flexDirection = "column";
 
         // Itera sobre las respuestas y agrega cada una como un párrafo
         for (const question in answers) {
             const resultElement = document.createElement("p");
             resultElement.textContent = `${question}: ${answers[question]}`;
             resultsContainer.appendChild(resultElement);
-    }
+        }
 
         // Agrega los botones, el encabezado y los resultados al contenedor de resultados
         results.appendChild(buttonsContainer);
@@ -292,11 +359,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Oculta el botón "Enviar" y los selectores de autor, módulo y test
         submitButton.style.display = "none";
-        //testSelector.style.display = "block"; // <--- Se elimina esta línea
         form.style.display = "none";
-
-        // Selecciona el test actual en el menú desplegable
-        //testDropdown.value = selectedTest; // <--- Se elimina esta línea
 
         // Muestra el selector de autor
         authorSelector.style.display = "block";
@@ -308,9 +371,15 @@ document.addEventListener('DOMContentLoaded', function () {
         // Selecciona el módulo actual en el menú desplegable
         moduleDropdown.value = selectedModule;
 
+        // Muestra el selector de tema
+        themeSelector.style.display = "block";
+        // Selecciona el tema actual en el menú desplegable
+        themeDropdown.value = selectedTheme;
+
         // Define los márgenes de los selectores de autor y módulo
         authorSelector.style.marginTop = "20px";
         moduleSelector.style.marginTop = "40px";
+        themeSelector.style.marginTop = "60px";
 
         // Muestra los botones "Menu Principal" y "Repetir"
         menuPrincipalButton.style.display = "block";
@@ -329,7 +398,7 @@ document.addEventListener('DOMContentLoaded', function () {
             } else if (question.tipo === "checkbox") {
                 answer = Array.from(document.querySelectorAll(`input[name="${question.pregunta}"]:checked`)).map(input => input.value);
             } else if (question.tipo === "text") {
-                answer = document.querySelector(`input[name="${question.pregunta}"`).value; 
+                answer = document.querySelector(`input[name="${question.pregunta}"`).value;
             }
 
             answers[question.pregunta] = answer;
@@ -358,7 +427,7 @@ document.addEventListener('DOMContentLoaded', function () {
         form.innerHTML = "";
 
         // Carga las preguntas del test seleccionado
-        fetch(`./tests/${selectedAuthor}/${selectedModule}/${selectedTest}.json`)
+        fetch(`./tests/${selectedAuthor}/${selectedModule}/${selectedTheme}/${selectedTest}.json`)
             .then(response => response.json())
             .then(loadedQuestions => {
                 questions = loadedQuestions;
@@ -375,13 +444,13 @@ document.addEventListener('DOMContentLoaded', function () {
         // Oculta los selectores de autor, módulo y test
         authorSelector.style.display = "none";
         moduleSelector.style.display = "none";
-        //testSelector.style.display = "none"; // <--- Se elimina esta línea
+        themeSelector.style.display = "none";
 
         // Muestra el contenedor del formulario
         form.style.display = "block";
 
         // Limpia el contenido del contenedor de resultados para que no se muestren los resultados anteriores
-        results.innerHTML = ""; 
+        results.innerHTML = "";
     });
 
     // Cargar la lista de autores al inicio
