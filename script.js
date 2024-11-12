@@ -352,6 +352,30 @@ document.addEventListener('DOMContentLoaded', function () {
             resultsContainer.appendChild(resultElement);
         }
 
+        // Calcula el porcentaje de respuestas correctas
+        let correctAnswers = 0;
+        for (let i = 0; i < questions.length; i++) {
+            const question = questions[i];
+            const userAnswer = answers[question.pregunta];
+
+            if (question.tipo === "radio" || question.tipo === "text") {
+                if (userAnswer === question.respuesta) {
+                    correctAnswers++;
+                }
+            } else if (question.tipo === "checkbox") {
+                if (Array.isArray(question.respuesta) && userAnswer.length === question.respuesta.length &&
+                    userAnswer.every(answer => question.respuesta.includes(answer))) {
+                    correctAnswers++;
+            }
+            }
+        }
+        const percentage = Math.round((correctAnswers / questions.length) * 100);
+
+        // Agrega el porcentaje de respuestas correctas a los resultados
+        const resultElement = document.createElement("p");
+        resultElement.textContent = `Porcentaje de respuestas correctas: ${percentage}%`;
+        resultsContainer.appendChild(resultElement);
+
         // Agrega los botones, el encabezado y los resultados al contenedor de resultados
         results.appendChild(buttonsContainer);
         results.appendChild(resultsHeader);
