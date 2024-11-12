@@ -225,6 +225,11 @@ document.addEventListener('DOMContentLoaded', function () {
             if (question && question.tipo) {
                 let questionElement = createQuestionElement(question);
                 form.appendChild(questionElement);
+
+                // Agrega el contenedor para la respuesta
+                const answerContainer = document.createElement("div");
+                answerContainer.id = `answer-container-${currentQuestionIndex}`;
+                form.appendChild(answerContainer);
             } else {
                 alert("Error: La pregunta no tiene el tipo definido.");
             }
@@ -463,12 +468,37 @@ document.addEventListener('DOMContentLoaded', function () {
             } else if (question.tipo === "checkbox") {
                 answer = Array.from(document.querySelectorAll(`input[name="${question.pregunta}"]:checked`)).map(input => input.value);
             } else if (question.tipo === "text") {
-                answer = document.querySelector(`input[name="${question.pregunta}"]`).value;
+                answer = document.querySelector(`input[name="${question.pregunta}"`).value;
             }
             answers[question.pregunta] = answer;
+
+            // Comprueba si la respuesta es correcta
+            let isCorrect = false;
+            if (question.tipo === "radio" || question.tipo === "text") {
+                isCorrect = answer === question.respuesta;
+            } else if (question.tipo === "checkbox") {
+                isCorrect = Array.isArray(question.respuesta) && answer.length === question.respuesta.length &&
+                    answer.every(answer => question.respuesta.includes(answer));
+            }
+
+            // Muestra si la respuesta es correcta o no
+            const answerContainer = document.getElementById(`answer-container-${currentQuestionIndex}`);
+            const resultElement = document.createElement("p");
+            resultElement.textContent = `${isCorrect ? 'Correcto' : 'Incorrecto'}`;
+            answerContainer.appendChild(resultElement);
+
+            // Agrega el botón "Siguiente pregunta"
+            const nextButton = document.createElement("button");
+            nextButton.textContent = "Siguiente pregunta";
+            nextButton.addEventListener("click", () => {
+                // Avanza a la siguiente pregunta
             currentQuestionIndex++;
+                // Limpia el formulario
             form.innerHTML = "";
+                // Muestra la siguiente pregunta
             showQuestion();
+    });
+            answerContainer.appendChild(nextButton);
         } else {
             showResults();
         }
