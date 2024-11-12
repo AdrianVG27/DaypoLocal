@@ -292,11 +292,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Oculta el botón "Enviar" y los selectores de autor, módulo y test
         submitButton.style.display = "none";
-        testSelector.style.display = "block";
+        //testSelector.style.display = "block"; // <--- Se elimina esta línea
         form.style.display = "none";
 
         // Selecciona el test actual en el menú desplegable
-        testDropdown.value = selectedTest;
+        //testDropdown.value = selectedTest; // <--- Se elimina esta línea
 
         // Muestra el selector de autor
         authorSelector.style.display = "block";
@@ -375,7 +375,7 @@ document.addEventListener('DOMContentLoaded', function () {
         // Oculta los selectores de autor, módulo y test
         authorSelector.style.display = "none";
         moduleSelector.style.display = "none";
-        testSelector.style.display = "none";
+        //testSelector.style.display = "none"; // <--- Se elimina esta línea
 
         // Muestra el contenedor del formulario
         form.style.display = "block";
