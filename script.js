@@ -230,6 +230,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 const answerContainer = document.createElement("div");
                 answerContainer.id = `answer-container-${currentQuestionIndex}`;
                 form.appendChild(answerContainer);
+
+                // Desbloquea los selectores de respuesta
+                const answerInputs = form.querySelectorAll("input[type='radio'], input[type='checkbox'], input[type='text']");
+                answerInputs.forEach(input => {
+                    input.disabled = false;
+                });
+
         // Muestra el botón "Enviar"
         submitButton.style.display = "block";
             } else {
@@ -418,31 +425,8 @@ document.addEventListener('DOMContentLoaded', function () {
             submitButton.style.display = "none";
         form.style.display = "none";
 
-        // Muestra el selector de autor
-        authorSelector.style.display = "block";
-        // Selecciona el autor actual en el menú desplegable
-        authorSelector.value = selectedAuthor;
-
-        // Muestra el selector de módulo
-        moduleSelector.style.display = "block";
-        // Selecciona el módulo actual en el menú desplegable
-        moduleDropdown.value = selectedModule;
-
-        // Muestra el selector de tema
-        themeSelector.style.display = "block";
-        // Selecciona el tema actual en el menú desplegable
-        themeDropdown.value = selectedTheme;
-
-        // Define los márgenes de los selectores de autor y módulo
-        authorSelector.style.marginTop = "20px";
-        moduleSelector.style.marginTop = "40px";
-        themeSelector.style.marginTop = "60px";
-
-        // Muestra los botones "Menu Principal" y "Repetir"
-        menuPrincipalButton.style.display = "block";
-        repetirButton.style.display = "block";
+        // ... (código existente) ...
     }
-
     // Añade un evento al botón de envío para procesar las respuestas
     submitButton.addEventListener("click", function (event) {
         event.preventDefault();
@@ -474,8 +458,15 @@ document.addEventListener('DOMContentLoaded', function () {
             resultElement.textContent = `${isCorrect ? 'Correcto' : 'Incorrecto'}`;
             answerContainer.appendChild(resultElement);
 
+            // Bloquea los selectores de respuesta
+            const answerInputs = form.querySelectorAll("input[type='radio'], input[type='checkbox'], input[type='text']");
+            answerInputs.forEach(input => {
+                input.disabled = true;
+            });
+
             // Oculta el botón "Enviar"
             submitButton.style.display = "none";
+
             // Agrega el botón "Siguiente pregunta"
             const nextButton = document.createElement("button");
             nextButton.textContent = "Siguiente";
