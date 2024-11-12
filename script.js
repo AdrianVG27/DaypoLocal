@@ -364,10 +364,29 @@ document.addEventListener('DOMContentLoaded', function () {
                     userAnswer.every(answer => question.respuesta.includes(answer));
             }
 
-            // Muestra la pregunta, la respuesta del usuario y la respuesta correcta
-            const resultElement = document.createElement("p");
-            resultElement.textContent = `${i + 1}. ${question.pregunta}: Tu respuesta: ${userAnswer} - Respuesta correcta: ${question.respuesta} - ${isCorrect ? '¡Correcto!' : 'Incorrecto'}`;
-            questionResults.appendChild(resultElement);
+            // Crea un contenedor para la pregunta y la respuesta
+            const resultContainer = document.createElement("div");
+            resultContainer.style.display = "flex";
+            resultContainer.style.flexDirection = "column"; // Cambia a columna
+            resultContainer.style.marginBottom = "10px"; // Agrega un margen inferior para separar las preguntas
+            // Crea elementos para mostrar la pregunta, la respuesta del usuario y la respuesta correcta
+            const questionElement = document.createElement("p");
+            questionElement.textContent = `Pregunta ${i + 1}`;
+            resultContainer.appendChild(questionElement);
+
+            const userAnswerElement = document.createElement("p");
+            userAnswerElement.textContent = `Tu respuesta: ${userAnswer}`;
+            resultContainer.appendChild(userAnswerElement);
+
+            const correctAnswerElement = document.createElement("p");
+            correctAnswerElement.textContent = `Respuesta correcta: ${question.respuesta}`;
+            resultContainer.appendChild(correctAnswerElement);
+
+        const resultElement = document.createElement("p");
+            resultElement.textContent = `${isCorrect ? 'Correcto' : 'Incorrecto'}`;
+            resultContainer.appendChild(resultElement);
+
+            questionResults.appendChild(resultContainer);
         }
 
         // Agrega los resultados de las preguntas al contenedor de resultados
@@ -439,11 +458,12 @@ document.addEventListener('DOMContentLoaded', function () {
             const question = questions[currentQuestionIndex];
             let answer;
             if (question.tipo === "radio") {
+                // Apply the suggested edit here:
                 answer = document.querySelector(`input[name="${question.pregunta}"]:checked`).value;
             } else if (question.tipo === "checkbox") {
                 answer = Array.from(document.querySelectorAll(`input[name="${question.pregunta}"]:checked`)).map(input => input.value);
             } else if (question.tipo === "text") {
-                answer = document.querySelector(`input[name="${question.pregunta}"`).value;
+                answer = document.querySelector(`input[name="${question.pregunta}"]`).value;
             }
             answers[question.pregunta] = answer;
             currentQuestionIndex++;
