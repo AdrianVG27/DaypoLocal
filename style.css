@@ -13,8 +13,8 @@ body {
 
 /* style.css */
 #submit-button-container {
-    display: flex; 
-    justify-content: center; 
+    display: flex;
+    justify-content: center;
 }
 
 #submit-button {
@@ -24,7 +24,9 @@ body {
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    display: none; 
-    margin: 0 auto; /* Centra el botón horizontalmente */
-    width: auto; /* Permite que el botón se ajuste al contenido */
+    display: none;
+    margin: 0 auto;
+    /* Centra el botón horizontalmente */
+    width: auto;
+    /* Permite que el botón se ajuste al contenido */
 }

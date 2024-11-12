@@ -1,28 +1,37 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Test de Adrián</title>
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
     <div class="container">
         <h1>Test de Adrián</h1>
-        <div id="test-selector">
-            <h2>Elige un test:</h2>
-            <select id="test-dropdown">
-                <option value="seleccionar">Selecciona un test</option>
-                <option value="personalidad">Test de Personalidad</option>
-                <option value="compatibilidad">Test de Compatibilidad</option>
-                <option value="inteligencia-emocional">Test de Inteligencia Emocional</option>
-                <!-- Agrega más opciones de tests aquí -->
+        <div id="author-selector">
+            <h2>Elige un autor:</h2>
+            <select id="author-dropdown"></select>
+        </div>
+        <div id="module-selector" style="display: none;">
+            <h2>Elige un módulo:</h2>
+            <select id="module-dropdown">
+                <option value="seleccionar" selected>Selecciona un módulo</option>
+                <!-- Las opciones de módulos se agregarán aquí -->
             </select>
+        </div>
+        <div id="test-selector" style="display: none;">
+            <h2>Elige un test:</h2>
+            <select id="test-dropdown"></select>
         </div>
         <form id="test-form"></form>
         <br>
-        <button type="submit" id="submit-button">Enviar</button>
+        <button type="submit" id="submit-button" style="display: none;">Enviar</button>
         <br>
+        <button id="menu-principal-button" style="display: none;">Menu Principal</button>
+        <button id="repetir-button" style="display: none;">Repetir</button>
         <div id="results">
             <!-- Resultados del test -->
         </div>
@@ -30,4 +39,5 @@
 
     <script src="script.js"></script>
 </body>
+
 </html>
