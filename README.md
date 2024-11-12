@@ -7,10 +7,10 @@ Tareas a realizar:
 - [x] Menú de selección de test
 - [x] Botón de menú principal
 - [x] Botón de repetir test
-- [ ] Sistema de detección de respuestas correctas
-- [ ] Sistema de puntuación
-- [ ] Aleatorizar preguntas
-- [ ] Aleatorizar respuestas
+- [x] Sistema de detección de respuestas correctas
+- [x] Sistema de puntuación
+- [x] Aleatorizar preguntas
+- [x] Aleatorizar respuestas
 - [ ] Menú de creación de tests con las preguntas de notebooklm
 - [ ] Creación de usuario y login
 - [ ] Sistema de puntuación de tests ⭐⭐⭐⭐⭐
