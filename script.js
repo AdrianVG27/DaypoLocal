@@ -3,35 +3,50 @@ document.addEventListener('DOMContentLoaded', function () {
     const results = document.getElementById("results");
     const submitButton = document.getElementById("submit-button");
     const testDropdown = document.getElementById("test-dropdown");
+    const testSelector = document.getElementById("test-selector"); // Agrega el selector
 
     let currentQuestionIndex = 0;
     let questions = [];
     let answers = {};
+    let selectedTest = ""; // Variable para almacenar el test seleccionado
 
     // Inicializa el selector de tests
     // (Ya no es necesario actualizar las opciones del selector)
     // Añade un evento al menú desplegable para cargar el test seleccionado
     testDropdown.addEventListener("change", function () {
-        const selectedTest = this.value;
+        selectedTest = this.value; // Almacena el test seleccionado
         console.log("Test seleccionado:", selectedTest); // Verifica el test seleccionado aquí
 
-        // Limpia el contenido del formulario y los resultados
-        form.innerHTML = "";
-        results.innerHTML = "";
+        // Verifica si el usuario seleccionó la opción "seleccionar"
+        if (selectedTest === "seleccionar") {
+            // Redirige a la página principal
+            window.location.href = "/main.html"; // Reemplaza "/" con la URL de tu página principal
+        } else {
+            // Limpia el contenido del formulario y los resultados
+            form.innerHTML = "";
 
+            // Oculta el selector de tests
+            testSelector.style.display = "none"; 
 
-        // Carga las preguntas del test seleccionado
-        fetch(`./tests/${selectedTest}.json`)
-            .then(response => response.json())
-            .then(loadedQuestions => {
-                questions = loadedQuestions;
-                currentQuestionIndex = 0;
-                answers = {}; // Reiniciar las respuestas
-                // Mostrar la primera pregunta si hay preguntas en el test
-                if (questions.length > 0) {
-                    showQuestion();
-                }
-            });
+            // Muestra el contenedor del formulario 
+            form.style.display = "block"; 
+
+            // Muestra el botón de envío
+            submitButton.style.display = "block";
+
+            // Carga las preguntas del test seleccionado
+            fetch(`./tests/${selectedTest}.json`)
+                .then(response => response.json())
+                .then(loadedQuestions => {
+                    questions = loadedQuestions;
+                    currentQuestionIndex = 0;
+                    answers = {}; // Reiniciar las respuestas
+                    // Mostrar la primera pregunta si hay preguntas en el test
+                    if (questions.length > 0) {
+                        showQuestion();
+                    }
+                });
+        }
     });
 
     // Función para mostrar la pregunta actual
@@ -74,14 +89,22 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Función para procesar las respuestas y mostrar los resultados
     function showResults() {
-        // ... (código para procesar las respuestas y mostrar los resultados) ...
-        results.innerHTML = "<h1>Resultados</h1>";
-        // ...
-        // Aquí puedes mostrar las respuestas del usuario almacenadas en el objeto `answers`
-        // Ejemplo:
+        results.innerHTML = "<h1>Resultados</h1>"; 
         for (const question in answers) {
-            results.innerHTML += `<p>${question}: ${answers[question]}</p>`;
+            const resultElement = document.createElement("p");
+            resultElement.textContent = `${question}: ${answers[question]}`; 
+            results.appendChild(resultElement);
         }
+
+        // Oculta el botón "Enviar" y muestra el selector de test
+        submitButton.style.display = "none";
+        testSelector.style.display = "block";
+
+        // Oculta el contenedor del formulario
+        form.style.display = "none";
+
+        // Preselecciona el test que se acaba de realizar
+        testDropdown.value = selectedTest;
     }
 
     // Añade un evento al botón de envío para procesar las respuestas
