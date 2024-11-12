@@ -351,6 +351,11 @@ document.addEventListener('DOMContentLoaded', function () {
         buttonsContainer.appendChild(menuPrincipalButton);
         buttonsContainer.appendChild(repetirButton);
 
+        menuPrincipalButton.style.marginRight = "10px" // Agrega un margen derecho al botón "Menú Principal"
+
+        menuPrincipalButton.style.display = "block" // Muestra el botón "Menú Principal"
+        repetirButton.style.display = "block" // Muestra el botón "Repetir"
+
         // Agrega el encabezado de los resultados
         const resultsHeader = document.createElement("h1");
         resultsHeader.textContent = "Resultados";
