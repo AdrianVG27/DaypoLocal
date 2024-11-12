@@ -146,6 +146,15 @@ document.addEventListener('DOMContentLoaded', function () {
         return questions;
     }
 
+    // Función para mezclar el orden de las opciones de respuesta
+    function shuffleOptions(options) {
+        for (let i = options.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [options[i], options[j]] = [options[j], options[i]];
+        }
+        return options;
+    }
+
     // Evento para cambiar el autor
     authorDropdown.addEventListener("change", function () {
         selectedAuthor = this.value;
@@ -291,7 +300,9 @@ document.addEventListener('DOMContentLoaded', function () {
         optionsContainer.style.display = "flex";
         optionsContainer.style.flexDirection = "column";
 
-        question.opciones.forEach(opcion => {
+        // Mezcla las opciones de respuesta
+        const shuffledOptions = shuffleOptions([...question.opciones]);
+        shuffledOptions.forEach(opcion => {
             const optionElement = document.createElement("label");
             const optionInput = document.createElement("input");
             optionInput.type = "radio";
@@ -317,7 +328,9 @@ document.addEventListener('DOMContentLoaded', function () {
         optionsContainer.style.display = "flex";
         optionsContainer.style.flexDirection = "column";
 
-        question.opciones.forEach(opcion => {
+        // Mezcla las opciones de respuesta
+        const shuffledOptions = shuffleOptions([...question.opciones]);
+        shuffledOptions.forEach(opcion => {
             const optionElement = document.createElement("label");
             const optionInput = document.createElement("input");
             optionInput.type = "checkbox";
