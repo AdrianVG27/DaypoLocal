@@ -15,3 +15,4 @@ Tareas a realizar:
 - [ ] Creación de usuario y login
 - [ ] Sistema de puntuación de tests ⭐⭐⭐⭐⭐
 - [ ] Sistema de puntuación de usuario tomando como puntuación la media de sus tests
+- [ ] Creación de una "tarifa" para acceso a los test de 1 test semanal
