@@ -137,6 +137,24 @@ document.addEventListener('DOMContentLoaded', function () {
             });
     }
 
+    // Función para mezclar el orden de las preguntas
+    function shuffleQuestions(questions) {
+        for (let i = questions.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [questions[i], questions[j]] = [questions[j], questions[i]];
+        }
+        return questions;
+    }
+
+    // Función para mezclar el orden de las opciones de respuesta
+    function shuffleOptions(options) {
+        for (let i = options.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [options[i], options[j]] = [options[j], options[i]];
+        }
+        return options;
+    }
+
     // Evento para cambiar el autor
     authorDropdown.addEventListener("change", function () {
         selectedAuthor = this.value;
@@ -205,7 +223,8 @@ document.addEventListener('DOMContentLoaded', function () {
         fetch(`./tests/${selectedAuthor}/${selectedModule}/${selectedTheme}/${selectedTest}.json`)
             .then(response => response.json())
             .then(loadedQuestions => {
-                questions = loadedQuestions;
+                // Mezcla el orden de las preguntas antes de asignarlas
+                questions = shuffleQuestions(loadedQuestions);
                 currentQuestionIndex = 0;
                 answers = {};
                 if (questions.length > 0) {
@@ -225,6 +244,20 @@ document.addEventListener('DOMContentLoaded', function () {
             if (question && question.tipo) {
                 let questionElement = createQuestionElement(question);
                 form.appendChild(questionElement);
+
+                // Agrega el contenedor para la respuesta
+                const answerContainer = document.createElement("div");
+                answerContainer.id = `answer-container-${currentQuestionIndex}`;
+                form.appendChild(answerContainer);
+
+                // Desbloquea los selectores de respuesta
+                const answerInputs = form.querySelectorAll("input[type='radio'], input[type='checkbox'], input[type='text']");
+                answerInputs.forEach(input => {
+                    input.disabled = false;
+                });
+
+        // Muestra el botón "Enviar"
+        submitButton.style.display = "block";
             } else {
                 alert("Error: La pregunta no tiene el tipo definido.");
             }
@@ -232,6 +265,7 @@ document.addEventListener('DOMContentLoaded', function () {
             showResults();
         }
 
+        // Oculta los selectores
         authorSelector.style.display = "none";
         moduleSelector.style.display = "none";
         themeSelector.style.display = "none";
@@ -266,7 +300,9 @@ document.addEventListener('DOMContentLoaded', function () {
         optionsContainer.style.display = "flex";
         optionsContainer.style.flexDirection = "column";
 
-        question.opciones.forEach(opcion => {
+        // Mezcla las opciones de respuesta
+        const shuffledOptions = shuffleOptions([...question.opciones]);
+        shuffledOptions.forEach(opcion => {
             const optionElement = document.createElement("label");
             const optionInput = document.createElement("input");
             optionInput.type = "radio";
@@ -275,7 +311,7 @@ document.addEventListener('DOMContentLoaded', function () {
             optionElement.appendChild(optionInput);
             optionElement.appendChild(document.createTextNode(opcion));
             optionsContainer.appendChild(optionElement);
-        });
+    });
 
         label.appendChild(optionsContainer);
 
@@ -292,7 +328,9 @@ document.addEventListener('DOMContentLoaded', function () {
         optionsContainer.style.display = "flex";
         optionsContainer.style.flexDirection = "column";
 
-        question.opciones.forEach(opcion => {
+        // Mezcla las opciones de respuesta
+        const shuffledOptions = shuffleOptions([...question.opciones]);
+        shuffledOptions.forEach(opcion => {
             const optionElement = document.createElement("label");
             const optionInput = document.createElement("input");
             optionInput.type = "checkbox";
@@ -301,7 +339,7 @@ document.addEventListener('DOMContentLoaded', function () {
             optionElement.appendChild(optionInput);
             optionElement.appendChild(document.createTextNode(opcion));
             optionsContainer.appendChild(optionElement);
-        });
+});
 
         label.appendChild(optionsContainer);
 
@@ -336,6 +374,11 @@ document.addEventListener('DOMContentLoaded', function () {
         buttonsContainer.appendChild(menuPrincipalButton);
         buttonsContainer.appendChild(repetirButton);
 
+        menuPrincipalButton.style.marginRight = "10px" // Agrega un margen derecho al botón "Menú Principal"
+
+        menuPrincipalButton.style.display = "block" // Muestra el botón "Menú Principal"
+        repetirButton.style.display = "block" // Muestra el botón "Repetir"
+
         // Agrega el encabezado de los resultados
         const resultsHeader = document.createElement("h1");
         resultsHeader.textContent = "Resultados";
@@ -345,12 +388,61 @@ document.addEventListener('DOMContentLoaded', function () {
         resultsContainer.style.display = "flex";
         resultsContainer.style.flexDirection = "column";
 
-        // Itera sobre las respuestas y agrega cada una como un párrafo
-        for (const question in answers) {
+        // Crea un contenedor para mostrar las preguntas y respuestas
+        const questionResults = document.createElement("div");
+        questionResults.style.display = "flex";
+        questionResults.style.flexDirection = "column";
+
+        // Itera sobre las preguntas y muestra si se respondieron correctamente o no
+        let correctAnswers = 0;
+        for (let i = 0; i < questions.length; i++) {
+            const question = questions[i];
+            const userAnswer = answers[question.pregunta];
+
+            // Compara la respuesta del usuario con la respuesta correcta
+            let isCorrect = false;
+            if (question.tipo === "radio" || question.tipo === "text") {
+                isCorrect = userAnswer === question.respuesta;
+            } else if (question.tipo === "checkbox") {
+                isCorrect = Array.isArray(question.respuesta) && userAnswer.length === question.respuesta.length &&
+                    userAnswer.every(answer => question.respuesta.includes(answer));
+            }
+
+            // Crea un contenedor para la pregunta y la respuesta
+            const resultContainer = document.createElement("div");
+            resultContainer.style.display = "flex";
+            resultContainer.style.flexDirection = "column"; // Cambia a columna
+            resultContainer.style.marginBottom = "10px"; // Agrega un margen inferior para separar las preguntas
+            // Crea elementos para mostrar la pregunta, la respuesta del usuario y la respuesta correcta
+            const questionElement = document.createElement("p");
+            questionElement.textContent = `Pregunta ${i + 1}`;
+            resultContainer.appendChild(questionElement);
+
+            const userAnswerElement = document.createElement("p");
+            userAnswerElement.textContent = `Tu respuesta: ${userAnswer}`;
+            resultContainer.appendChild(userAnswerElement);
+
+            const correctAnswerElement = document.createElement("p");
+            correctAnswerElement.textContent = `Respuesta correcta: ${question.respuesta}`;
+            resultContainer.appendChild(correctAnswerElement);
+
             const resultElement = document.createElement("p");
-            resultElement.textContent = `${question}: ${answers[question]}`;
-            resultsContainer.appendChild(resultElement);
+            resultElement.textContent = `${isCorrect ? 'Correcta' : 'Incorrecta'}`;
+            resultContainer.appendChild(resultElement);
+
+            if (isCorrect) {
+                correctAnswers++;
+            }
+
+            questionResults.appendChild(resultContainer);
         }
+
+        const percentage = Math.round((correctAnswers / questions.length) * 100);
+
+        // Agrega el porcentaje de respuestas correctas a los resultados
+        const resultElement = document.createElement("p");
+        resultElement.textContent = `Porcentaje de respuestas correctas: ${percentage}%`;
+        resultsContainer.appendChild(resultElement);
 
         // Agrega los botones, el encabezado y los resultados al contenedor de resultados
         results.appendChild(buttonsContainer);
@@ -358,34 +450,11 @@ document.addEventListener('DOMContentLoaded', function () {
         results.appendChild(resultsContainer);
 
         // Oculta el botón "Enviar" y los selectores de autor, módulo y test
-        submitButton.style.display = "none";
+            submitButton.style.display = "none";
         form.style.display = "none";
 
-        // Muestra el selector de autor
-        authorSelector.style.display = "block";
-        // Selecciona el autor actual en el menú desplegable
-        authorSelector.value = selectedAuthor;
-
-        // Muestra el selector de módulo
-        moduleSelector.style.display = "block";
-        // Selecciona el módulo actual en el menú desplegable
-        moduleDropdown.value = selectedModule;
-
-        // Muestra el selector de tema
-        themeSelector.style.display = "block";
-        // Selecciona el tema actual en el menú desplegable
-        themeDropdown.value = selectedTheme;
-
-        // Define los márgenes de los selectores de autor y módulo
-        authorSelector.style.marginTop = "20px";
-        moduleSelector.style.marginTop = "40px";
-        themeSelector.style.marginTop = "60px";
-
-        // Muestra los botones "Menu Principal" y "Repetir"
-        menuPrincipalButton.style.display = "block";
-        repetirButton.style.display = "block";
+        // ... (código existente) ...
     }
-
     // Añade un evento al botón de envío para procesar las respuestas
     submitButton.addEventListener("click", function (event) {
         event.preventDefault();
@@ -400,11 +469,44 @@ document.addEventListener('DOMContentLoaded', function () {
             } else if (question.tipo === "text") {
                 answer = document.querySelector(`input[name="${question.pregunta}"`).value;
             }
-
             answers[question.pregunta] = answer;
-            currentQuestionIndex++;
-            form.innerHTML = "";
-            showQuestion();
+
+            // Comprueba si la respuesta es correcta
+            let isCorrect = false;
+            if (question.tipo === "radio" || question.tipo === "text") {
+                isCorrect = answer === question.respuesta;
+            } else if (question.tipo === "checkbox") {
+                isCorrect = Array.isArray(question.respuesta) && answer.length === question.respuesta.length &&
+                    answer.every(answer => question.respuesta.includes(answer));
+            }
+
+            // Muestra si la respuesta es correcta o no
+            const answerContainer = document.getElementById(`answer-container-${currentQuestionIndex}`);
+            const resultElement = document.createElement("p");
+            resultElement.textContent = `${isCorrect ? 'Correcto' : 'Incorrecto'}`;
+            answerContainer.appendChild(resultElement);
+
+            // Bloquea los selectores de respuesta
+            const answerInputs = form.querySelectorAll("input[type='radio'], input[type='checkbox'], input[type='text']");
+            answerInputs.forEach(input => {
+                input.disabled = true;
+            });
+
+            // Oculta el botón "Enviar"
+            submitButton.style.display = "none";
+
+            // Agrega el botón "Siguiente pregunta"
+            const nextButton = document.createElement("button");
+            nextButton.textContent = "Siguiente";
+            nextButton.addEventListener("click", () => {
+                // Avanza a la siguiente pregunta
+                currentQuestionIndex++;
+                // Limpia el formulario
+        form.innerHTML = "";
+                // Muestra la siguiente pregunta
+                    showQuestion();
+            });
+            answerContainer.appendChild(nextButton);
         } else {
             showResults();
         }
