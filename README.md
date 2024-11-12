@@ -14,4 +14,4 @@ Tareas a realizar:
 - [ ] Menú de creación de tests con las preguntas de notebooklm
 - [ ] Creación de usuario y login
 - [ ] Sistema de puntuación de tests ⭐⭐⭐⭐⭐
-- [ ] Sistema d epuntuación de usuario tomando como puntuación la media de sus tests
+- [ ] Sistema de puntuación de usuario tomando como puntuación la media de sus tests
