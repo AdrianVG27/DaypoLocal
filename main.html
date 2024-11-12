@@ -9,7 +9,11 @@
 <body>
     <div class="container">
         <h1>Test de Adrián</h1>
-        <div id="test-selector">
+        <div id="author-selector">
+            <h2>Elige un autor:</h2>
+            <select id="author-dropdown"></select>
+        </div>
+        <div id="test-selector" style="display: none;">
             <h2>Elige un test:</h2>
             <select id="test-dropdown">
                 <option value="seleccionar">Selecciona un test</option>
@@ -21,7 +25,7 @@
         </div>
         <form id="test-form"></form>
         <br>
-        <button type="submit" id="submit-button">Enviar</button>
+        <button type="submit" id="submit-button" style="display: none;">Enviar</button>
         <br>
         <div id="results">
             <!-- Resultados del test -->

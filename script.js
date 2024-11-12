@@ -3,16 +3,59 @@ document.addEventListener('DOMContentLoaded', function () {
     const results = document.getElementById("results");
     const submitButton = document.getElementById("submit-button");
     const testDropdown = document.getElementById("test-dropdown");
+    const authorDropdown = document.getElementById("author-dropdown");
     const testSelector = document.getElementById("test-selector");
 
     let currentQuestionIndex = 0;
     let questions = [];
     let answers = {};
     let selectedTest = "";
-    // Añade un evento al menú desplegable para cargar el test seleccionado
+    let selectedAuthor = "";
+
+    // Función para cargar la lista de autores
+    function loadAuthors() {
+        fetch("./tests/authors.json") // Ruta correcta al archivo authors.json
+                .then(response => response.json())
+            .then(authors => {
+                authorDropdown.innerHTML = ""; // Limpia las opciones existentes
+                authors.forEach(author => {
+                    const option = document.createElement("option");
+                    option.value = author;
+                    option.text = author;
+                    authorDropdown.appendChild(option);
+                });
+            });
+                    }
+
+    // Función para cargar la lista de tests para el autor seleccionado
+    function loadTests(author) {
+        fetch(`./tests/${author}`) // Ruta para la carpeta del autor
+                .then(response => response.json())
+            .then(tests => {
+                testDropdown.innerHTML = ""; // Limpia las opciones existentes
+                tests.forEach(test => {
+                    const option = document.createElement("option");
+                    option.value = test;
+                    option.text = test;
+                    testDropdown.appendChild(option);
+                });
+            });
+        }
+
+    // Evento para cambiar el autor
+    authorDropdown.addEventListener("change", function () {
+        selectedAuthor = this.value;
+        console.log("Autor seleccionado:", selectedAuthor);
+
+        // Mostrar el selector de tests y actualizar las opciones
+        testSelector.style.display = "block";
+        loadTests(selectedAuthor);
+    });
+
+    // Evento para cambiar el test
     testDropdown.addEventListener("change", function () {
         selectedTest = this.value; // Almacena el test seleccionado
-        console.log("Test seleccionado:", selectedTest); // Verifica el test seleccionado aquí
+        console.log("Test seleccionado:", selectedTest);
 
         // Verifica si el usuario seleccionó la opción "seleccionar"
         if (selectedTest === "seleccionar") {
@@ -24,16 +67,16 @@ document.addEventListener('DOMContentLoaded', function () {
             results.innerHTML = "";
 
             // Oculta el selector de tests
-            testSelector.style.display = "none"; 
+            testSelector.style.display = "none";
 
-            // Muestra el contenedor del formulario 
-            form.style.display = "block"; 
+            // Muestra el contenedor del formulario
+            form.style.display = "block";
 
             // Muestra el botón de envío
             submitButton.style.display = "block";
 
             // Carga las preguntas del test seleccionado
-            fetch(`./tests/${selectedTest}.json`)
+            fetch(`./tests/${selectedAuthor}/${selectedTest}.json`)
                 .then(response => response.json())
                 .then(loadedQuestions => {
                     questions = loadedQuestions;
@@ -42,10 +85,10 @@ document.addEventListener('DOMContentLoaded', function () {
                     // Mostrar la primera pregunta si hay preguntas en el test
                     if (questions.length > 0) {
                         showQuestion();
-                    }
-                });
         }
     });
+        }
+});
 
     // Función para mostrar la pregunta actual
     function showQuestion() {
@@ -217,4 +260,7 @@ document.addEventListener('DOMContentLoaded', function () {
             showResults();
         }
     });
+
+    // Cargar la lista de autores al inicio
+    loadAuthors();
 });
