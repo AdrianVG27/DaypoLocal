@@ -489,7 +489,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             // Agrega el botón "Siguiente pregunta"
             const nextButton = document.createElement("button");
-            nextButton.textContent = "Siguiente pregunta";
+            nextButton.textContent = "Siguiente";
             nextButton.addEventListener("click", () => {
                 // Avanza a la siguiente pregunta
             currentQuestionIndex++;
