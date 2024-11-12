@@ -3,15 +3,12 @@ document.addEventListener('DOMContentLoaded', function () {
     const results = document.getElementById("results");
     const submitButton = document.getElementById("submit-button");
     const testDropdown = document.getElementById("test-dropdown");
-    const testSelector = document.getElementById("test-selector"); // Agrega el selector
+    const testSelector = document.getElementById("test-selector");
 
     let currentQuestionIndex = 0;
     let questions = [];
     let answers = {};
-    let selectedTest = ""; // Variable para almacenar el test seleccionado
-
-    // Inicializa el selector de tests
-    // (Ya no es necesario actualizar las opciones del selector)
+    let selectedTest = "";
     // Añade un evento al menú desplegable para cargar el test seleccionado
     testDropdown.addEventListener("change", function () {
         selectedTest = this.value; // Almacena el test seleccionado
@@ -24,6 +21,7 @@ document.addEventListener('DOMContentLoaded', function () {
         } else {
             // Limpia el contenido del formulario y los resultados
             form.innerHTML = "";
+            results.innerHTML = "";
 
             // Oculta el selector de tests
             testSelector.style.display = "none"; 
@@ -84,17 +82,99 @@ document.addEventListener('DOMContentLoaded', function () {
         }
         // ... (Añade más tipos de pregunta si es necesario)
 
-        return questionElement;
+        // Añade un contenedor para la pregunta y las respuestas
+        const questionContainer = document.createElement("div");
+        questionContainer.style.display = "flex"; // Define la propiedad de visualización a "flex"
+        questionContainer.style.flexDirection = "column"; // Define la dirección del flexbox a "column"
+
+        questionContainer.appendChild(questionElement); // Añade el elemento de pregunta al contenedor
+        return questionContainer;
     }
 
+    // Función para crear una pregunta de tipo radio
+    function createRadioQuestion(question) {
+        const label = document.createElement("label");
+        label.htmlFor = question.pregunta;
+        label.textContent = question.pregunta;
+
+        const optionsContainer = document.createElement("div"); // Crea un contenedor para las opciones
+        optionsContainer.style.display = "flex";
+        optionsContainer.style.flexDirection = "column";
+
+        question.opciones.forEach(opcion => {
+            const optionElement = document.createElement("label");
+            const optionInput = document.createElement("input");
+            optionInput.type = "radio";
+            optionInput.name = question.pregunta;
+            optionInput.value = opcion;
+            optionElement.appendChild(optionInput);
+            optionElement.appendChild(document.createTextNode(opcion));
+            optionsContainer.appendChild(optionElement); // Añade la opción al contenedor
+        });
+
+        label.appendChild(optionsContainer); // Añade las opciones al elemento label
+
+        return label;
+    }
+
+    // Función para crear una pregunta de tipo checkbox
+    function createCheckboxQuestion(question) {
+        const label = document.createElement("label");
+        label.htmlFor = question.pregunta;
+        label.textContent = question.pregunta;
+
+        const optionsContainer = document.createElement("div"); // Crea un contenedor para las opciones
+        optionsContainer.style.display = "flex";
+        optionsContainer.style.flexDirection = "column";
+
+        question.opciones.forEach(opcion => {
+            const optionElement = document.createElement("label");
+            const optionInput = document.createElement("input");
+            optionInput.type = "checkbox";
+            optionInput.name = question.pregunta;
+            optionInput.value = opcion;
+            optionElement.appendChild(optionInput);
+            optionElement.appendChild(document.createTextNode(opcion));
+            optionsContainer.appendChild(optionElement); // Añade la opción al contenedor
+        });
+
+        label.appendChild(optionsContainer); // Añade las opciones al elemento label
+
+        return label;
+    }
+
+    // Función para crear una pregunta de tipo texto
+    function createTextQuestion(question) {
+        const label = document.createElement("label");
+        label.htmlFor = question.pregunta;
+        label.textContent = question.pregunta;
+
+        const input = document.createElement("input");
+        input.type = "text";
+        input.name = question.pregunta;
+        input.id = question.pregunta;
+
+        label.appendChild(input);
+
+        return label;
+    }
     // Función para procesar las respuestas y mostrar los resultados
     function showResults() {
         results.innerHTML = "<h1>Resultados</h1>"; 
+        // Crea un div para contener las respuestas en vertical
+        const resultsContainer = document.createElement("div");
+        resultsContainer.style.display = "flex"; // Define la propiedad de visualización a "flex"
+        resultsContainer.style.flexDirection = "column"; // Define la dirección del flexbox a "column"
+
         for (const question in answers) {
             const resultElement = document.createElement("p");
             resultElement.textContent = `${question}: ${answers[question]}`; 
-            results.appendChild(resultElement);
+            // Añade el elemento de resultado al contenedor de resultados
+            resultsContainer.appendChild(resultElement); 
         }
+
+        // Añade el contenedor de resultados al elemento results
+        results.appendChild(resultsContainer); 
 
         // Oculta el botón "Enviar" y muestra el selector de test
         submitButton.style.display = "none";
@@ -120,7 +200,7 @@ document.addEventListener('DOMContentLoaded', function () {
             } else if (question.tipo === "checkbox") {
                 answer = Array.from(document.querySelectorAll(`input[name="${question.pregunta}"]:checked`)).map(input => input.value);
             } else if (question.tipo === "text") {
-                answer = document.querySelector(`input[name="${question.pregunta}"`).value; // Corrección: faltaba cerrar el selector
+                answer = document.querySelector(`input[name="${question.pregunta}"]`).value; // Corrección: faltaba cerrar el selector
             }
 
             // Guarda la respuesta en el objeto `answers`
@@ -137,60 +217,4 @@ document.addEventListener('DOMContentLoaded', function () {
             showResults();
         }
     });
-
-    // Función para crear una pregunta de tipo radio
-    function createRadioQuestion(question) {
-        const label = document.createElement("label");
-        label.htmlFor = question.pregunta;
-        label.textContent = question.pregunta;
-
-        question.opciones.forEach(opcion => {
-            const optionElement = document.createElement("label");
-            const optionInput = document.createElement("input");
-            optionInput.type = "radio";
-            optionInput.name = question.pregunta;
-            optionInput.value = opcion;
-            optionElement.appendChild(optionInput);
-            optionElement.appendChild(document.createTextNode(opcion));
-            label.appendChild(optionElement);
-        });
-
-        return label;
-    }
-
-    // Función para crear una pregunta de tipo checkbox
-    function createCheckboxQuestion(question) {
-        const label = document.createElement("label");
-        label.htmlFor = question.pregunta;
-        label.textContent = question.pregunta;
-
-        question.opciones.forEach(opcion => {
-            const optionElement = document.createElement("label");
-            const optionInput = document.createElement("input");
-            optionInput.type = "checkbox";
-            optionInput.name = question.pregunta;
-            optionInput.value = opcion;
-            optionElement.appendChild(optionInput);
-            optionElement.appendChild(document.createTextNode(opcion));
-            label.appendChild(optionElement);
-        });
-
-        return label;
-    }
-
-    // Función para crear una pregunta de tipo texto
-    function createTextQuestion(question) {
-        const label = document.createElement("label");
-        label.htmlFor = question.pregunta;
-        label.textContent = question.pregunta;
-
-        const input = document.createElement("input");
-        input.type = "text";
-        input.name = question.pregunta;
-        input.id = question.pregunta;
-
-        label.appendChild(input);
-
-        return label;
-    }
 });
