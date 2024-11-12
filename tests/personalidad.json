@@ -3,30 +3,30 @@
         "pregunta": "Pregunta 1",
         "tipo": "radio", 
         "opciones": [
-            "Extrovertido",
-            "Introvertido",
             "prueba 1",
-            "preueba 2"
+            "prueba 2",
+            "prueba 3",
+            "prueba 4"
         ]
     },
     {
         "pregunta": "Pregunta 2",
         "tipo": "radio", 
         "opciones": [
-            "Compañía de otras personas",
-            "Estar solo",
             "prueba 1",
-            "preueba 2"
+            "prueba 2",
+            "prueba 3",
+            "prueba 4"
         ]
     },
     {
         "pregunta": "Pregunta 3",
         "tipo": "radio", 
         "opciones": [
-            "Práctico",
-            "Creativo",
             "prueba 1",
-            "preueba 2"
+            "prueba 2",
+            "prueba 3",
+            "prueba 4"
         ]
     }
 ]

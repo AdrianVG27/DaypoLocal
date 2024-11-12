@@ -11,6 +11,12 @@ body {
     border-radius: 5px;
 }
 
+/* style.css */
+#submit-button-container {
+    display: flex; 
+    justify-content: center; 
+}
+
 #submit-button {
     padding: 10px 20px;
     background-color: #4CAF50;
@@ -18,4 +24,7 @@ body {
     border: none;
     border-radius: 5px;
     cursor: pointer;
+    display: none; 
+    margin: 0 auto; /* Centra el botón horizontalmente */
+    width: auto; /* Permite que el botón se ajuste al contenido */
 }

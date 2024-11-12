@@ -3,35 +3,48 @@ document.addEventListener('DOMContentLoaded', function () {
     const results = document.getElementById("results");
     const submitButton = document.getElementById("submit-button");
     const testDropdown = document.getElementById("test-dropdown");
+    const testSelector = document.getElementById("test-selector");
 
     let currentQuestionIndex = 0;
     let questions = [];
     let answers = {};
-
-    // Inicializa el selector de tests
-    // (Ya no es necesario actualizar las opciones del selector)
+    let selectedTest = "";
     // Añade un evento al menú desplegable para cargar el test seleccionado
     testDropdown.addEventListener("change", function () {
-        const selectedTest = this.value;
+        selectedTest = this.value; // Almacena el test seleccionado
         console.log("Test seleccionado:", selectedTest); // Verifica el test seleccionado aquí
 
-        // Limpia el contenido del formulario y los resultados
-        form.innerHTML = "";
-        results.innerHTML = "";
+        // Verifica si el usuario seleccionó la opción "seleccionar"
+        if (selectedTest === "seleccionar") {
+            // Redirige a la página principal
+            window.location.href = "/main.html"; // Reemplaza "/" con la URL de tu página principal
+        } else {
+            // Limpia el contenido del formulario y los resultados
+            form.innerHTML = "";
+            results.innerHTML = "";
 
+            // Oculta el selector de tests
+            testSelector.style.display = "none"; 
 
-        // Carga las preguntas del test seleccionado
-        fetch(`./tests/${selectedTest}.json`)
-            .then(response => response.json())
-            .then(loadedQuestions => {
-                questions = loadedQuestions;
-                currentQuestionIndex = 0;
-                answers = {}; // Reiniciar las respuestas
-                // Mostrar la primera pregunta si hay preguntas en el test
-                if (questions.length > 0) {
-                    showQuestion();
-                }
-            });
+            // Muestra el contenedor del formulario 
+            form.style.display = "block"; 
+
+            // Muestra el botón de envío
+            submitButton.style.display = "block";
+
+            // Carga las preguntas del test seleccionado
+            fetch(`./tests/${selectedTest}.json`)
+                .then(response => response.json())
+                .then(loadedQuestions => {
+                    questions = loadedQuestions;
+                    currentQuestionIndex = 0;
+                    answers = {}; // Reiniciar las respuestas
+                    // Mostrar la primera pregunta si hay preguntas en el test
+                    if (questions.length > 0) {
+                        showQuestion();
+                    }
+                });
+        }
     });
 
     // Función para mostrar la pregunta actual
@@ -69,57 +82,24 @@ document.addEventListener('DOMContentLoaded', function () {
         }
         // ... (Añade más tipos de pregunta si es necesario)
 
-        return questionElement;
+        // Añade un contenedor para la pregunta y las respuestas
+        const questionContainer = document.createElement("div");
+        questionContainer.style.display = "flex"; // Define la propiedad de visualización a "flex"
+        questionContainer.style.flexDirection = "column"; // Define la dirección del flexbox a "column"
+
+        questionContainer.appendChild(questionElement); // Añade el elemento de pregunta al contenedor
+        return questionContainer;
     }
-
-    // Función para procesar las respuestas y mostrar los resultados
-    function showResults() {
-        // ... (código para procesar las respuestas y mostrar los resultados) ...
-        results.innerHTML = "<h1>Resultados</h1>";
-        // ...
-        // Aquí puedes mostrar las respuestas del usuario almacenadas en el objeto `answers`
-        // Ejemplo:
-        for (const question in answers) {
-            results.innerHTML += `<p>${question}: ${answers[question]}</p>`;
-        }
-    }
-
-    // Añade un evento al botón de envío para procesar las respuestas
-    submitButton.addEventListener("click", function (event) {
-        event.preventDefault();
-
-        // **Corrección**: Verifica que haya una pregunta antes de obtener la respuesta
-        if (currentQuestionIndex < questions.length) {
-            const question = questions[currentQuestionIndex];
-            let answer;
-            if (question.tipo === "radio") {
-                answer = document.querySelector(`input[name="${question.pregunta}"]:checked`).value;
-            } else if (question.tipo === "checkbox") {
-                answer = Array.from(document.querySelectorAll(`input[name="${question.pregunta}"]:checked`)).map(input => input.value);
-            } else if (question.tipo === "text") {
-                answer = document.querySelector(`input[name="${question.pregunta}"`).value; // Corrección: faltaba cerrar el selector
-            }
-
-            // Guarda la respuesta en el objeto `answers`
-            answers[question.pregunta] = answer; // Corrección: asigna el valor correctamente
-            // Avanza al siguiente índice de pregunta
-            currentQuestionIndex++;
-            // Limpia el formulario
-            form.innerHTML = "";
-
-            // Muestra la siguiente pregunta
-            showQuestion();
-        } else {
-            // Mostrar resultados si todas las preguntas han sido respondidas
-            showResults();
-        }
-    });
 
     // Función para crear una pregunta de tipo radio
     function createRadioQuestion(question) {
         const label = document.createElement("label");
         label.htmlFor = question.pregunta;
         label.textContent = question.pregunta;
+
+        const optionsContainer = document.createElement("div"); // Crea un contenedor para las opciones
+        optionsContainer.style.display = "flex";
+        optionsContainer.style.flexDirection = "column";
 
         question.opciones.forEach(opcion => {
             const optionElement = document.createElement("label");
@@ -129,8 +109,10 @@ document.addEventListener('DOMContentLoaded', function () {
             optionInput.value = opcion;
             optionElement.appendChild(optionInput);
             optionElement.appendChild(document.createTextNode(opcion));
-            label.appendChild(optionElement);
+            optionsContainer.appendChild(optionElement); // Añade la opción al contenedor
         });
+
+        label.appendChild(optionsContainer); // Añade las opciones al elemento label
 
         return label;
     }
@@ -141,6 +123,10 @@ document.addEventListener('DOMContentLoaded', function () {
         label.htmlFor = question.pregunta;
         label.textContent = question.pregunta;
 
+        const optionsContainer = document.createElement("div"); // Crea un contenedor para las opciones
+        optionsContainer.style.display = "flex";
+        optionsContainer.style.flexDirection = "column";
+
         question.opciones.forEach(opcion => {
             const optionElement = document.createElement("label");
             const optionInput = document.createElement("input");
@@ -149,8 +135,10 @@ document.addEventListener('DOMContentLoaded', function () {
             optionInput.value = opcion;
             optionElement.appendChild(optionInput);
             optionElement.appendChild(document.createTextNode(opcion));
-            label.appendChild(optionElement);
+            optionsContainer.appendChild(optionElement); // Añade la opción al contenedor
         });
+
+        label.appendChild(optionsContainer); // Añade las opciones al elemento label
 
         return label;
     }
@@ -170,4 +158,63 @@ document.addEventListener('DOMContentLoaded', function () {
 
         return label;
     }
+    // Función para procesar las respuestas y mostrar los resultados
+    function showResults() {
+        results.innerHTML = "<h1>Resultados</h1>"; 
+        // Crea un div para contener las respuestas en vertical
+        const resultsContainer = document.createElement("div");
+        resultsContainer.style.display = "flex"; // Define la propiedad de visualización a "flex"
+        resultsContainer.style.flexDirection = "column"; // Define la dirección del flexbox a "column"
+
+        for (const question in answers) {
+            const resultElement = document.createElement("p");
+            resultElement.textContent = `${question}: ${answers[question]}`; 
+            // Añade el elemento de resultado al contenedor de resultados
+            resultsContainer.appendChild(resultElement); 
+        }
+
+        // Añade el contenedor de resultados al elemento results
+        results.appendChild(resultsContainer); 
+
+        // Oculta el botón "Enviar" y muestra el selector de test
+        submitButton.style.display = "none";
+        testSelector.style.display = "block";
+
+        // Oculta el contenedor del formulario
+        form.style.display = "none";
+
+        // Preselecciona el test que se acaba de realizar
+        testDropdown.value = selectedTest;
+    }
+
+    // Añade un evento al botón de envío para procesar las respuestas
+    submitButton.addEventListener("click", function (event) {
+        event.preventDefault();
+
+        // **Corrección**: Verifica que haya una pregunta antes de obtener la respuesta
+        if (currentQuestionIndex < questions.length) {
+            const question = questions[currentQuestionIndex];
+            let answer;
+            if (question.tipo === "radio") {
+                answer = document.querySelector(`input[name="${question.pregunta}"]:checked`).value;
+            } else if (question.tipo === "checkbox") {
+                answer = Array.from(document.querySelectorAll(`input[name="${question.pregunta}"]:checked`)).map(input => input.value);
+            } else if (question.tipo === "text") {
+                answer = document.querySelector(`input[name="${question.pregunta}"]`).value; // Corrección: faltaba cerrar el selector
+            }
+
+            // Guarda la respuesta en el objeto `answers`
+            answers[question.pregunta] = answer; // Corrección: asigna el valor correctamente
+            // Avanza al siguiente índice de pregunta
+            currentQuestionIndex++;
+            // Limpia el formulario
+            form.innerHTML = "";
+
+            // Muestra la siguiente pregunta
+            showQuestion();
+        } else {
+            // Mostrar resultados si todas las preguntas han sido respondidas
+            showResults();
+        }
+    });
 });
