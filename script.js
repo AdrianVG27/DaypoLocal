@@ -137,6 +137,15 @@ document.addEventListener('DOMContentLoaded', function () {
             });
     }
 
+    // Función para mezclar el orden de las preguntas
+    function shuffleQuestions(questions) {
+        for (let i = questions.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [questions[i], questions[j]] = [questions[j], questions[i]];
+        }
+        return questions;
+    }
+
     // Evento para cambiar el autor
     authorDropdown.addEventListener("change", function () {
         selectedAuthor = this.value;
@@ -205,7 +214,8 @@ document.addEventListener('DOMContentLoaded', function () {
         fetch(`./tests/${selectedAuthor}/${selectedModule}/${selectedTheme}/${selectedTest}.json`)
             .then(response => response.json())
             .then(loadedQuestions => {
-                questions = loadedQuestions;
+                // Mezcla el orden de las preguntas antes de asignarlas
+                questions = shuffleQuestions(loadedQuestions);
                 currentQuestionIndex = 0;
                 answers = {};
                 if (questions.length > 0) {
