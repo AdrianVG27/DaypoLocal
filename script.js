@@ -345,12 +345,33 @@ document.addEventListener('DOMContentLoaded', function () {
         resultsContainer.style.display = "flex";
         resultsContainer.style.flexDirection = "column";
 
-        // Itera sobre las respuestas y agrega cada una como un párrafo
-        for (const question in answers) {
+        // Crea un contenedor para mostrar las preguntas y respuestas
+        const questionResults = document.createElement("div");
+        questionResults.style.display = "flex";
+        questionResults.style.flexDirection = "column";
+
+        // Itera sobre las preguntas y muestra si se respondieron correctamente o no
+        for (let i = 0; i < questions.length; i++) {
+            const question = questions[i];
+            const userAnswer = answers[question.pregunta];
+
+            // Compara la respuesta del usuario con la respuesta correcta
+            let isCorrect = false;
+            if (question.tipo === "radio" || question.tipo === "text") {
+                isCorrect = userAnswer === question.respuesta;
+            } else if (question.tipo === "checkbox") {
+                isCorrect = Array.isArray(question.respuesta) && userAnswer.length === question.respuesta.length &&
+                    userAnswer.every(answer => question.respuesta.includes(answer));
+            }
+
+            // Muestra la pregunta, la respuesta del usuario y la respuesta correcta
             const resultElement = document.createElement("p");
-            resultElement.textContent = `${question}: ${answers[question]}`;
-            resultsContainer.appendChild(resultElement);
+            resultElement.textContent = `${i + 1}. ${question.pregunta}: Tu respuesta: ${userAnswer} - Respuesta correcta: ${question.respuesta} - ${isCorrect ? '¡Correcto!' : 'Incorrecto'}`;
+            questionResults.appendChild(resultElement);
         }
+
+        // Agrega los resultados de las preguntas al contenedor de resultados
+        resultsContainer.appendChild(questionResults);
 
         // Calcula el porcentaje de respuestas correctas
         let correctAnswers = 0;
@@ -424,7 +445,6 @@ document.addEventListener('DOMContentLoaded', function () {
             } else if (question.tipo === "text") {
                 answer = document.querySelector(`input[name="${question.pregunta}"`).value;
             }
-
             answers[question.pregunta] = answer;
             currentQuestionIndex++;
             form.innerHTML = "";
