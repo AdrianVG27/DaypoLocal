@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const testDropdown = document.getElementById("test-dropdown");
     const authorDropdown = document.getElementById("author-dropdown");
     const testSelector = document.getElementById("test-selector");
+    const authorSelector = document.getElementById("author-selector");
 
     let currentQuestionIndex = 0;
     let questions = [];
@@ -14,6 +15,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Función para cargar la lista de autores
     function loadAuthors() {
+        authorSelector.style.display = "block";
+        authorSelector.value = selectedAuthor;
         fetch("./tests/authors.json")
             .then(response => response.json())
             .then(authors => {
@@ -92,6 +95,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
             // Oculta el selector de tests
             testSelector.style.display = "none";
+
+            authorSelector.style.display = "none";
 
             // Muestra el contenedor del formulario
             form.style.display = "block";
@@ -252,6 +257,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Preselecciona el test que se acaba de realizar
         testDropdown.value = selectedTest;
+
+        authorSelector.style.display = "block";
+        authorSelector.value = selectedAuthor;
     }
 
     // Añade un evento al botón de envío para procesar las respuestas
