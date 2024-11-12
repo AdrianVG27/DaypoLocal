@@ -1,7 +1,7 @@
 [
     {
         "pregunta": "Pregunta 1",
-        "tipo": "radio", 
+        "tipo": "radio",
         "opciones": [
             "prueba 1",
             "prueba 2",
@@ -11,7 +11,7 @@
     },
     {
         "pregunta": "Pregunta 2",
-        "tipo": "radio", 
+        "tipo": "radio",
         "opciones": [
             "prueba 1",
             "prueba 2",
@@ -21,7 +21,7 @@
     },
     {
         "pregunta": "Pregunta 3",
-        "tipo": "radio", 
+        "tipo": "radio",
         "opciones": [
             "prueba 1",
             "prueba 2",

@@ -6,34 +6,36 @@ document.addEventListener('DOMContentLoaded', function () {
     const authorDropdown = document.getElementById("author-dropdown");
     const testSelector = document.getElementById("test-selector");
     const authorSelector = document.getElementById("author-selector");
-    const moduleDropdown = document.getElementById("module-dropdown"); // Añade el selector de módulos
-    const moduleSelector = document.getElementById("module-selector"); // Añade el selector de módulos
+    const moduleDropdown = document.getElementById("module-dropdown"); 
+    const moduleSelector = document.getElementById("module-selector"); 
+
+    // Botones Menu Principal y Repetir
+    const menuPrincipalButton = document.getElementById("menu-principal-button");
+    const repetirButton = document.getElementById("repetir-button");
 
     let currentQuestionIndex = 0;
     let questions = [];
     let answers = {};
     let selectedTest = "";
     let selectedAuthor = "";
-    let selectedModule = ""; // Añade la variable para el módulo seleccionado
+    let selectedModule = ""; 
 
     // Inicialmente, muestra el selector de autor
-        authorSelector.style.display = "block";
+    authorSelector.style.display = "block";
 
     // Función para cargar la lista de autores
     function loadAuthors() {
         fetch("./tests/authors.json")
             .then(response => response.json())
             .then(authors => {
-                authorDropdown.innerHTML = ""; // Limpia las opciones existentes
+                authorDropdown.innerHTML = ""; 
 
-                // Agrega la opción "Selecciona un autor"
                 const defaultOption = document.createElement("option");
                 defaultOption.value = "seleccionar";
                 defaultOption.text = "Selecciona un autor";
-                defaultOption.selected = true; // Preselecciona esta opción
+                defaultOption.selected = true; 
                 authorDropdown.appendChild(defaultOption);
 
-                // Agrega las opciones de autores
                 authors.forEach(author => {
                     const option = document.createElement("option");
                     option.value = author;
@@ -45,19 +47,17 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Función para cargar la lista de módulos para el autor seleccionado
     function loadModules(author) {
-        fetch(`./tests/${author}/modules.json`) // Ruta para la carpeta del autor
+        fetch(`./tests/${author}/modules.json`)
             .then(response => response.json())
             .then(modules => {
-                moduleDropdown.innerHTML = ""; // Limpia las opciones existentes
+                moduleDropdown.innerHTML = ""; 
 
-                // Agrega la opción "Selecciona un módulo" (preseleccionada)
                 const defaultOption = document.createElement("option");
                 defaultOption.value = "seleccionar";
                 defaultOption.text = "Selecciona un módulo";
-                defaultOption.selected = true; // Preselecciona esta opción
+                defaultOption.selected = true; 
                 moduleDropdown.appendChild(defaultOption);
 
-                // Agrega las opciones de módulos
                 modules.forEach(module => {
                     const option = document.createElement("option");
                     option.value = module;
@@ -69,19 +69,17 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Función para cargar la lista de tests para el autor y módulo seleccionados
     function loadTests(author, module) {
-        fetch(`./tests/${author}/${module}/tests.json`) // Ruta para la carpeta del módulo
-                .then(response => response.json())
+        fetch(`./tests/${author}/${module}/tests.json`)
+            .then(response => response.json())
             .then(tests => {
-                testDropdown.innerHTML = ""; // Limpia las opciones existentes
+                testDropdown.innerHTML = ""; 
 
-                // Agrega la opción "Selecciona un test"
                 const defaultOption = document.createElement("option");
                 defaultOption.value = "seleccionar";
                 defaultOption.text = "Selecciona un test";
-                defaultOption.selected = true; // Preselecciona esta opción
+                defaultOption.selected = true; 
                 testDropdown.appendChild(defaultOption);
 
-                // Agrega las opciones de tests
                 tests.forEach(test => {
                     const option = document.createElement("option");
                     option.value = test;
@@ -89,26 +87,23 @@ document.addEventListener('DOMContentLoaded', function () {
                     testDropdown.appendChild(option);
                 });
             });
-                    }
+    }
 
     // Evento para cambiar el autor
     authorDropdown.addEventListener("change", function () {
         selectedAuthor = this.value;
         console.log("Autor seleccionado:", selectedAuthor);
 
-        // Redirige a main.html si se selecciona "Selecciona un autor"
         if (selectedAuthor === "seleccionar") {
             window.location.href = "/main.html";
             return;
         }
 
-        // Mostrar el selector de módulos y actualizar las opciones
         moduleSelector.style.display = "block";
-        moduleSelector.style.marginTop = "20px"; // Ajusta el margen superior para que aparezca debajo
+        moduleSelector.style.marginTop = "20px"; 
         loadModules(selectedAuthor);
 
-        // Ocultar el selector de autor (no se necesita ocultar, solo ajustar el margen)
-        authorSelector.style.marginTop = "20px"; // Ajusta el margen superior para que aparezca debajo del módulo
+        authorSelector.style.marginTop = "20px"; 
     });
 
     // Evento para cambiar el módulo
@@ -116,59 +111,42 @@ document.addEventListener('DOMContentLoaded', function () {
         selectedModule = this.value;
         console.log("Módulo seleccionado:", selectedModule);
 
-        // Redirige a main.html si se selecciona "Selecciona un módulo"
         if (selectedModule === "seleccionar") {
-            // Redirige a main.html con el autor seleccionado
-            window.location.href = `/main.html?author=${selectedAuthor}`; // Reemplaza "/" con la URL de tu página principal
-            return; // Deten el resto del código
+            window.location.href = `/main.html?author=${selectedAuthor}`; 
+            return; 
         }
 
-        // Mostrar el selector de tests y actualizar las opciones
         testSelector.style.display = "block";
-        testSelector.style.marginTop = "20px"; // Ajusta el margen superior para que aparezca debajo
+        testSelector.style.marginTop = "20px"; 
         loadTests(selectedAuthor, selectedModule);
 
-        // Ocultar el selector de módulos (no se necesita ocultar, solo ajustar el margen)
-        moduleSelector.style.marginTop = "20px"; // Ajusta el margen superior para que aparezca debajo del test
+        moduleSelector.style.marginTop = "20px"; 
     });
 
     // Evento para cambiar el test
     testDropdown.addEventListener("change", function () {
-        selectedTest = this.value; // Almacena el test seleccionado
+        selectedTest = this.value; 
         console.log("Test seleccionado:", selectedTest);
 
-        // Redirige a main.html si se selecciona "Selecciona un test"
         if (selectedTest === "seleccionar") {
-            // Redirige a main.html con el autor seleccionado
-            window.location.href = `/main.html?author=${selectedAuthor}&module=${selectedModule}`; // Reemplaza "/" con la URL de tu página principal
-            return; // Deten el resto del código
+            window.location.href = `/main.html?author=${selectedAuthor}&module=${selectedModule}`; 
+            return; 
         }
 
-            // Oculta el selector de tests
-            testSelector.style.display = "none";
-
-        // Oculta el selector de autor
-            authorSelector.style.display = "none";
-
-        // Oculta el selector de modulo
+        testSelector.style.display = "none";
+        authorSelector.style.display = "none";
         moduleSelector.style.display = "none";
+        form.style.display = "block";
+        submitButton.style.display = "block";
 
-            // Muestra el contenedor del formulario
-            form.style.display = "block";
-
-            // Muestra el botón de envío
-            submitButton.style.display = "block";
-
-            // Carga las preguntas del test seleccionado
         fetch(`./tests/${selectedAuthor}/${selectedModule}/${selectedTest}.json`)
-                .then(response => response.json())
-                .then(loadedQuestions => {
-                    questions = loadedQuestions;
-                    currentQuestionIndex = 0;
-                    answers = {}; // Reiniciar las respuestas
-                    // Mostrar la primera pregunta si hay preguntas en el test
-                    if (questions.length > 0) {
-                        showQuestion();
+            .then(response => response.json())
+            .then(loadedQuestions => {
+                questions = loadedQuestions;
+                currentQuestionIndex = 0;
+                answers = {}; 
+                if (questions.length > 0) {
+            showQuestion();
         }
     });
 });
@@ -178,32 +156,22 @@ document.addEventListener('DOMContentLoaded', function () {
         if (currentQuestionIndex < questions.length) {
             const question = questions[currentQuestionIndex];
 
-            // Verifica si la propiedad 'tipo' existe antes de usarla
             if (question && question.tipo) {
-                // Crea el elemento de pregunta
                 let questionElement = createQuestionElement(question);
-                // Añade la pregunta al formulario
                 form.appendChild(questionElement);
             } else {
-                // Mostrar un mensaje de error
                 alert("Error: La pregunta no tiene el tipo definido.");
             }
         } else {
-            // Todas las preguntas han sido respondidas
-            // Muestra los resultados aquí
             showResults();
         }
 
-        // Oculta el selector de autor mientras se muestra la pregunta
         authorSelector.style.display = "none";
-
-        // Oculta el selector de modulo mientras se muestra la pregunta
-        moduleSelector.style.display = "none"; 
+        moduleSelector.style.display = "none";
     }
 
     // Función para crear un elemento de pregunta
     function createQuestionElement(question) {
-        // Crea un elemento de pregunta según el tipo de respuesta
         let questionElement;
         if (question.tipo === "radio") {
             questionElement = createRadioQuestion(question);
@@ -212,14 +180,12 @@ document.addEventListener('DOMContentLoaded', function () {
         } else if (question.tipo === "text") {
             questionElement = createTextQuestion(question);
         }
-        // ... (Añade más tipos de pregunta si es necesario)
-
-        // Añade un contenedor para la pregunta y las respuestas
+        
         const questionContainer = document.createElement("div");
-        questionContainer.style.display = "flex"; // Define la propiedad de visualización a "flex"
-        questionContainer.style.flexDirection = "column"; // Define la dirección del flexbox a "column"
+        questionContainer.style.display = "flex"; 
+        questionContainer.style.flexDirection = "column"; 
 
-        questionContainer.appendChild(questionElement); // Añade el elemento de pregunta al contenedor
+        questionContainer.appendChild(questionElement); 
         return questionContainer;
     }
 
@@ -229,7 +195,7 @@ document.addEventListener('DOMContentLoaded', function () {
         label.htmlFor = question.pregunta;
         label.textContent = question.pregunta;
 
-        const optionsContainer = document.createElement("div"); // Crea un contenedor para las opciones
+        const optionsContainer = document.createElement("div"); 
         optionsContainer.style.display = "flex";
         optionsContainer.style.flexDirection = "column";
 
@@ -241,10 +207,10 @@ document.addEventListener('DOMContentLoaded', function () {
             optionInput.value = opcion;
             optionElement.appendChild(optionInput);
             optionElement.appendChild(document.createTextNode(opcion));
-            optionsContainer.appendChild(optionElement); // Añade la opción al contenedor
+            optionsContainer.appendChild(optionElement); 
         });
 
-        label.appendChild(optionsContainer); // Añade las opciones al elemento label
+        label.appendChild(optionsContainer); 
 
         return label;
     }
@@ -255,7 +221,7 @@ document.addEventListener('DOMContentLoaded', function () {
         label.htmlFor = question.pregunta;
         label.textContent = question.pregunta;
 
-        const optionsContainer = document.createElement("div"); // Crea un contenedor para las opciones
+        const optionsContainer = document.createElement("div"); 
         optionsContainer.style.display = "flex";
         optionsContainer.style.flexDirection = "column";
 
@@ -267,10 +233,10 @@ document.addEventListener('DOMContentLoaded', function () {
             optionInput.value = opcion;
             optionElement.appendChild(optionInput);
             optionElement.appendChild(document.createTextNode(opcion));
-            optionsContainer.appendChild(optionElement); // Añade la opción al contenedor
+            optionsContainer.appendChild(optionElement); 
         });
 
-        label.appendChild(optionsContainer); // Añade las opciones al elemento label
+        label.appendChild(optionsContainer); 
 
         return label;
     }
@@ -290,52 +256,71 @@ document.addEventListener('DOMContentLoaded', function () {
 
         return label;
     }
+
     // Función para procesar las respuestas y mostrar los resultados
     function showResults() {
-        results.innerHTML = "<h1>Resultados</h1>";
-        // Crea un div para contener las respuestas en vertical
-        const resultsContainer = document.createElement("div");
-        resultsContainer.style.display = "flex"; // Define la propiedad de visualización a "flex"
-        resultsContainer.style.flexDirection = "column"; // Define la dirección del flexbox a "column"
+        // Limpia el contenido anterior del contenedor de resultados
+        results.innerHTML = "";
 
+        // Crea un contenedor para los botones
+        const buttonsContainer = document.createElement("div");
+        buttonsContainer.style.display = "flex";
+        buttonsContainer.style.justifyContent = "center";
+        buttonsContainer.appendChild(menuPrincipalButton);
+        buttonsContainer.appendChild(repetirButton);
+
+        // Agrega el encabezado de los resultados
+        const resultsHeader = document.createElement("h1");
+        resultsHeader.textContent = "Resultados";
+
+        // Crea un contenedor para los resultados
+        const resultsContainer = document.createElement("div");
+        resultsContainer.style.display = "flex"; 
+        resultsContainer.style.flexDirection = "column"; 
+
+        // Itera sobre las respuestas y agrega cada una como un párrafo
         for (const question in answers) {
             const resultElement = document.createElement("p");
             resultElement.textContent = `${question}: ${answers[question]}`;
-            // Añade el elemento de resultado al contenedor de resultados
             resultsContainer.appendChild(resultElement);
-        }
+    }
 
-        // Añade el contenedor de resultados al elemento results
+        // Agrega los botones, el encabezado y los resultados al contenedor de resultados
+        results.appendChild(buttonsContainer);
+        results.appendChild(resultsHeader);
         results.appendChild(resultsContainer);
 
-        // Oculta el botón "Enviar" y muestra el selector de test
+        // Oculta el botón "Enviar" y los selectores de autor, módulo y test
         submitButton.style.display = "none";
         testSelector.style.display = "block";
-
-        // Oculta el contenedor del formulario
         form.style.display = "none";
 
-        // Preselecciona el test que se acaba de realizar
+        // Selecciona el test actual en el menú desplegable
         testDropdown.value = selectedTest;
 
-        // Mostrar el selector de autor después de mostrar los resultados
-        authorSelector.style.display = "block"; 
+        // Muestra el selector de autor
+        authorSelector.style.display = "block";
+        // Selecciona el autor actual en el menú desplegable
         authorSelector.value = selectedAuthor;
 
-        // Mostrar el selector de modulo después de mostrar los resultados
+        // Muestra el selector de módulo
         moduleSelector.style.display = "block";
-        moduleDropdown.value = selectedModule; // Preseleccionar el módulo
+        // Selecciona el módulo actual en el menú desplegable
+        moduleDropdown.value = selectedModule;
 
-        // Ajustar márgenes superiores
+        // Define los márgenes de los selectores de autor y módulo
         authorSelector.style.marginTop = "20px";
-        moduleSelector.style.marginTop = "40px"; // Ajustar margen para que aparezca debajo del selector de autor
+        moduleSelector.style.marginTop = "40px";
+
+        // Muestra los botones "Menu Principal" y "Repetir"
+        menuPrincipalButton.style.display = "block";
+        repetirButton.style.display = "block";
     }
 
     // Añade un evento al botón de envío para procesar las respuestas
     submitButton.addEventListener("click", function (event) {
         event.preventDefault();
 
-        // **Corrección**: Verifica que haya una pregunta antes de obtener la respuesta
         if (currentQuestionIndex < questions.length) {
             const question = questions[currentQuestionIndex];
             let answer;
@@ -344,22 +329,59 @@ document.addEventListener('DOMContentLoaded', function () {
             } else if (question.tipo === "checkbox") {
                 answer = Array.from(document.querySelectorAll(`input[name="${question.pregunta}"]:checked`)).map(input => input.value);
             } else if (question.tipo === "text") {
-                answer = document.querySelector(`input[name="${question.pregunta}"]`).value; // Corrección: faltaba cerrar el selector
+                answer = document.querySelector(`input[name="${question.pregunta}"`).value; 
             }
 
-                answer = document.querySelector(`input[name="${question.pregunta}"]`).value; // Corrección: faltaba cerrar el selector
-                answer = document.querySelector(`input[name="${question.pregunta}"`).value; // Corrección: faltaba cerrar el selector
-            // Avanza al siguiente índice de pregunta
+            answers[question.pregunta] = answer;
             currentQuestionIndex++;
-            // Limpia el formulario
             form.innerHTML = "";
-
-            // Muestra la siguiente pregunta
             showQuestion();
         } else {
-            // Mostrar resultados si todas las preguntas han sido respondidas
             showResults();
         }
+    });
+
+    // Añade eventos a los botones "Menu Principal" y "Repetir"
+    menuPrincipalButton.addEventListener("click", function () {
+        window.location.href = "/main.html";
+    });
+
+    repetirButton.addEventListener("click", function () {
+        // Oculta los botones "Menu Principal" y "Repetir"
+        menuPrincipalButton.style.display = "none";
+        repetirButton.style.display = "none";
+
+        // Reinicia el índice de la pregunta actual
+        currentQuestionIndex = 0;
+
+        // Reinicia el formulario
+        form.innerHTML = "";
+
+        // Carga las preguntas del test seleccionado
+        fetch(`./tests/${selectedAuthor}/${selectedModule}/${selectedTest}.json`)
+            .then(response => response.json())
+            .then(loadedQuestions => {
+                questions = loadedQuestions;
+                answers = {}; // Reiniciar las respuestas
+                // Mostrar la primera pregunta si hay preguntas en el test
+                if (questions.length > 0) {
+                    showQuestion();
+                }
+            });
+
+        // Muestra el botón "Enviar"
+        submitButton.style.display = "block";
+
+        // Oculta los selectores de autor, módulo y test
+        authorSelector.style.display = "none";
+        moduleSelector.style.display = "none";
+        testSelector.style.display = "none";
+
+        // Muestra el contenedor del formulario
+        form.style.display = "block";
+
+        // Limpia el contenido del contenedor de resultados para que no se muestren los resultados anteriores
+        results.innerHTML = ""; 
     });
 
     // Cargar la lista de autores al inicio
