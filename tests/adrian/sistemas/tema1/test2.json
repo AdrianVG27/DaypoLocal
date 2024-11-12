@@ -1,0 +1,222 @@
+[
+    {
+        "pregunta": "Pregunta 1",
+        "tipo": "radio",
+        "opciones": [
+            "opción 1",
+            "opción 2",
+            "opción 3",
+            "opción 4"
+        ],
+        "respuesta": "opción 1"
+    },
+    {
+        "pregunta": "Pregunta 2",
+        "tipo": "radio",
+        "opciones": [
+            "opción 1",
+            "opción 2",
+            "opción 3",
+            "opción 4"
+        ],
+        "respuesta": "opción 2"
+    },
+    {
+        "pregunta": "Pregunta 3",
+        "tipo": "radio",
+        "opciones": [
+            "opción 1",
+            "opción 2",
+            "opción 3",
+            "opción 4"
+        ],
+        "respuesta": "opción 3"
+    },
+    {
+        "pregunta": "Pregunta 4",
+        "tipo": "radio",
+        "opciones": [
+            "opción 1",
+            "opción 2",
+            "opción 3",
+            "opción 4"
+        ],
+        "respuesta": "opción 4"
+    },
+    {
+        "pregunta": "Pregunta 5",
+        "tipo": "radio",
+        "opciones": [
+            "opción 1",
+            "opción 2",
+            "opción 3",
+            "opción 4"
+        ],
+        "respuesta": "opción 1"
+    },
+    {
+        "pregunta": "Pregunta 6",
+        "tipo": "radio",
+        "opciones": [
+            "opción 1",
+            "opción 2",
+            "opción 3",
+            "opción 4"
+        ],
+        "respuesta": "opción 2"
+    },
+    {
+        "pregunta": "Pregunta 7",
+        "tipo": "radio",
+        "opciones": [
+            "opción 1",
+            "opción 2",
+            "opción 3",
+            "opción 4"
+        ],
+        "respuesta": "opción 3"
+    },
+    {
+        "pregunta": "Pregunta 8",
+        "tipo": "radio",
+        "opciones": [
+            "opción 1",
+            "opción 2",
+            "opción 3",
+            "opción 4"
+        ],
+        "respuesta": "opción 4"
+    },
+    {
+        "pregunta": "Pregunta 9",
+        "tipo": "radio",
+        "opciones": [
+            "opción 1",
+            "opción 2",
+            "opción 3",
+            "opción 4"
+        ],
+        "respuesta": "opción 1"
+    },
+    {
+        "pregunta": "Pregunta 10",
+        "tipo": "radio",
+        "opciones": [
+            "opción 1",
+            "opción 2",
+            "opción 3",
+            "opción 4"
+        ],
+        "respuesta": "opción 2"
+    },
+    {
+        "pregunta": "Pregunta 11",
+        "tipo": "radio",
+        "opciones": [
+            "opción 1",
+            "opción 2",
+            "opción 3",
+            "opción 4"
+        ],
+        "respuesta": "opción 3"
+    },
+    {
+        "pregunta": "Pregunta 12",
+        "tipo": "radio",
+        "opciones": [
+            "opción 1",
+            "opción 2",
+            "opción 3",
+            "opción 4"
+        ],
+        "respuesta": "opción 4"
+    },
+    {
+        "pregunta": "Pregunta 13",
+        "tipo": "radio",
+        "opciones": [
+            "opción 1",
+            "opción 2",
+            "opción 3",
+            "opción 4"
+        ],
+        "respuesta": "opción 1"
+    },
+    {
+        "pregunta": "Pregunta 14",
+        "tipo": "radio",
+        "opciones": [
+            "opción 1",
+            "opción 2",
+            "opción 3",
+            "opción 4"
+        ],
+        "respuesta": "opción 2"
+    },
+    {
+        "pregunta": "Pregunta 15",
+        "tipo": "radio",
+        "opciones": [
+            "opción 1",
+            "opción 2",
+            "opción 3",
+            "opción 4"
+        ],
+        "respuesta": "opción 3"
+    },
+    {
+        "pregunta": "Pregunta 16",
+        "tipo": "radio",
+        "opciones": [
+            "opción 1",
+            "opción 2",
+            "opción 3",
+            "opción 4"
+        ],
+        "respuesta": "opción 4"
+    },
+    {
+        "pregunta": "Pregunta 17",
+        "tipo": "radio",
+        "opciones": [
+            "opción 1",
+            "opción 2",
+            "opción 3",
+            "opción 4"
+        ],
+        "respuesta": "opción 1"
+    },
+    {
+        "pregunta": "Pregunta 18",
+        "tipo": "radio",
+        "opciones": [
+            "opción 1",
+            "opción 2",
+            "opción 3",
+            "opción 4"
+        ],
+        "respuesta": "opción 2"
+    },
+    {
+        "pregunta": "Pregunta 19",
+        "tipo": "radio",
+        "opciones": [
+            "opción 1",
+            "opción 2",
+            "opción 3",
+            "opción 4"
+        ],
+        "respuesta": "opción 3"
+    },
+    {
+        "pregunta": "Pregunta 20",
+        "tipo": "radio",
+        "opciones": [
+            "opción 1",
+            "opción 2",
+            "opción 3",
+            "opción 4"
+        ],
+        "respuesta": "opción 4"
+    }
+]
