@@ -230,6 +230,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 const answerContainer = document.createElement("div");
                 answerContainer.id = `answer-container-${currentQuestionIndex}`;
                 form.appendChild(answerContainer);
+        // Muestra el botón "Enviar"
+        submitButton.style.display = "block";
             } else {
                 alert("Error: La pregunta no tiene el tipo definido.");
             }
@@ -237,6 +239,7 @@ document.addEventListener('DOMContentLoaded', function () {
             showResults();
         }
 
+        // Oculta los selectores
         authorSelector.style.display = "none";
         moduleSelector.style.display = "none";
         themeSelector.style.display = "none";
@@ -280,7 +283,7 @@ document.addEventListener('DOMContentLoaded', function () {
             optionElement.appendChild(optionInput);
             optionElement.appendChild(document.createTextNode(opcion));
             optionsContainer.appendChild(optionElement);
-        });
+    });
 
         label.appendChild(optionsContainer);
 
@@ -306,7 +309,7 @@ document.addEventListener('DOMContentLoaded', function () {
             optionElement.appendChild(optionInput);
             optionElement.appendChild(document.createTextNode(opcion));
             optionsContainer.appendChild(optionElement);
-        });
+});
 
         label.appendChild(optionsContainer);
 
@@ -356,6 +359,7 @@ document.addEventListener('DOMContentLoaded', function () {
         questionResults.style.flexDirection = "column";
 
         // Itera sobre las preguntas y muestra si se respondieron correctamente o no
+        let correctAnswers = 0;
         for (let i = 0; i < questions.length; i++) {
             const question = questions[i];
             const userAnswer = answers[question.pregunta];
@@ -387,33 +391,17 @@ document.addEventListener('DOMContentLoaded', function () {
             correctAnswerElement.textContent = `Respuesta correcta: ${question.respuesta}`;
             resultContainer.appendChild(correctAnswerElement);
 
-        const resultElement = document.createElement("p");
-            resultElement.textContent = `${isCorrect ? 'Correcto' : 'Incorrecto'}`;
+            const resultElement = document.createElement("p");
+            resultElement.textContent = `${isCorrect ? 'Correcta' : 'Incorrecta'}`;
             resultContainer.appendChild(resultElement);
+
+            if (isCorrect) {
+                correctAnswers++;
+            }
 
             questionResults.appendChild(resultContainer);
         }
 
-        // Agrega los resultados de las preguntas al contenedor de resultados
-        resultsContainer.appendChild(questionResults);
-
-        // Calcula el porcentaje de respuestas correctas
-        let correctAnswers = 0;
-        for (let i = 0; i < questions.length; i++) {
-            const question = questions[i];
-            const userAnswer = answers[question.pregunta];
-
-            if (question.tipo === "radio" || question.tipo === "text") {
-                if (userAnswer === question.respuesta) {
-                    correctAnswers++;
-                }
-            } else if (question.tipo === "checkbox") {
-                if (Array.isArray(question.respuesta) && userAnswer.length === question.respuesta.length &&
-                    userAnswer.every(answer => question.respuesta.includes(answer))) {
-                    correctAnswers++;
-            }
-            }
-        }
         const percentage = Math.round((correctAnswers / questions.length) * 100);
 
         // Agrega el porcentaje de respuestas correctas a los resultados
@@ -427,7 +415,7 @@ document.addEventListener('DOMContentLoaded', function () {
         results.appendChild(resultsContainer);
 
         // Oculta el botón "Enviar" y los selectores de autor, módulo y test
-        submitButton.style.display = "none";
+            submitButton.style.display = "none";
         form.style.display = "none";
 
         // Muestra el selector de autor
@@ -463,7 +451,6 @@ document.addEventListener('DOMContentLoaded', function () {
             const question = questions[currentQuestionIndex];
             let answer;
             if (question.tipo === "radio") {
-                // Apply the suggested edit here:
                 answer = document.querySelector(`input[name="${question.pregunta}"]:checked`).value;
             } else if (question.tipo === "checkbox") {
                 answer = Array.from(document.querySelectorAll(`input[name="${question.pregunta}"]:checked`)).map(input => input.value);
@@ -487,17 +474,19 @@ document.addEventListener('DOMContentLoaded', function () {
             resultElement.textContent = `${isCorrect ? 'Correcto' : 'Incorrecto'}`;
             answerContainer.appendChild(resultElement);
 
+            // Oculta el botón "Enviar"
+            submitButton.style.display = "none";
             // Agrega el botón "Siguiente pregunta"
             const nextButton = document.createElement("button");
             nextButton.textContent = "Siguiente";
             nextButton.addEventListener("click", () => {
                 // Avanza a la siguiente pregunta
-            currentQuestionIndex++;
+                currentQuestionIndex++;
                 // Limpia el formulario
-            form.innerHTML = "";
+        form.innerHTML = "";
                 // Muestra la siguiente pregunta
-            showQuestion();
-    });
+                    showQuestion();
+            });
             answerContainer.appendChild(nextButton);
         } else {
             showResults();
