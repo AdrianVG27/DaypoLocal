@@ -14,10 +14,19 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Función para cargar la lista de autores
     function loadAuthors() {
-        fetch("./tests/authors.json") // Ruta correcta al archivo authors.json
-                .then(response => response.json())
+        fetch("./tests/authors.json")
+            .then(response => response.json())
             .then(authors => {
                 authorDropdown.innerHTML = ""; // Limpia las opciones existentes
+
+                // Agrega la opción "Selecciona un autor"
+                const defaultOption = document.createElement("option");
+                defaultOption.value = "seleccionar";
+                defaultOption.text = "Selecciona un autor";
+                defaultOption.selected = true; // Preselecciona esta opción
+                authorDropdown.appendChild(defaultOption);
+
+                // Agrega las opciones de autores
                 authors.forEach(author => {
                     const option = document.createElement("option");
                     option.value = author;
@@ -25,14 +34,23 @@ document.addEventListener('DOMContentLoaded', function () {
                     authorDropdown.appendChild(option);
                 });
             });
-                    }
+    }
 
     // Función para cargar la lista de tests para el autor seleccionado
     function loadTests(author) {
-        fetch(`./tests/${author}`) // Ruta para la carpeta del autor
-                .then(response => response.json())
+        fetch(`./tests/${author}/tests.json`) // Cambia "tests.json" al nombre del archivo JSON dentro de la carpeta del autor
+            .then(response => response.json())
             .then(tests => {
                 testDropdown.innerHTML = ""; // Limpia las opciones existentes
+
+                // Agrega la opción "Selecciona un test"
+                const defaultOption = document.createElement("option");
+                defaultOption.value = "seleccionar";
+                defaultOption.text = "Selecciona un test";
+                defaultOption.selected = true; // Preselecciona esta opción
+                testDropdown.appendChild(defaultOption);
+
+                // Agrega las opciones de tests
                 tests.forEach(test => {
                     const option = document.createElement("option");
                     option.value = test;
@@ -40,12 +58,18 @@ document.addEventListener('DOMContentLoaded', function () {
                     testDropdown.appendChild(option);
                 });
             });
-        }
+    }
 
     // Evento para cambiar el autor
     authorDropdown.addEventListener("change", function () {
         selectedAuthor = this.value;
         console.log("Autor seleccionado:", selectedAuthor);
+
+        // Redirige a main.html si se selecciona "Selecciona un autor"
+        if (selectedAuthor === "seleccionar") {
+            window.location.href = "/main.html"; // Reemplaza "/" con la URL de tu página principal
+            return; // Deten el resto del código
+        }
 
         // Mostrar el selector de tests y actualizar las opciones
         testSelector.style.display = "block";
@@ -85,10 +109,10 @@ document.addEventListener('DOMContentLoaded', function () {
                     // Mostrar la primera pregunta si hay preguntas en el test
                     if (questions.length > 0) {
                         showQuestion();
+                    }
+                });
         }
     });
-        }
-});
 
     // Función para mostrar la pregunta actual
     function showQuestion() {
@@ -203,7 +227,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
     // Función para procesar las respuestas y mostrar los resultados
     function showResults() {
-        results.innerHTML = "<h1>Resultados</h1>"; 
+        results.innerHTML = "<h1>Resultados</h1>";
         // Crea un div para contener las respuestas en vertical
         const resultsContainer = document.createElement("div");
         resultsContainer.style.display = "flex"; // Define la propiedad de visualización a "flex"
@@ -211,13 +235,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
         for (const question in answers) {
             const resultElement = document.createElement("p");
-            resultElement.textContent = `${question}: ${answers[question]}`; 
+            resultElement.textContent = `${question}: ${answers[question]}`;
             // Añade el elemento de resultado al contenedor de resultados
-            resultsContainer.appendChild(resultElement); 
+            resultsContainer.appendChild(resultElement);
         }
 
         // Añade el contenedor de resultados al elemento results
-        results.appendChild(resultsContainer); 
+        results.appendChild(resultsContainer);
 
         // Oculta el botón "Enviar" y muestra el selector de test
         submitButton.style.display = "none";
